@@ -261,7 +261,7 @@ function showQuestion() {
     card.className = 'card'; // reset all states
   });
 
-  setTimeout(() => speakSeq([q.question], 0.99, 1.18), 350);
+  setTimeout(() => speakSeq([q.question], 0.98, 1.18), 350);
 }
 
 // Single delegated listener on the grid
@@ -284,7 +284,7 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Até a Cacau sabia essa!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Viva Elisa', 'Viva Tôminhas'])], 1.25, 1.20), 200);
+    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Até a Cacau sabia essa!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Viva Elisa', 'Viva Tôminhas'])], 1.20, 1.18), 200);
     setTimeout(nextQuestion, 3000);
 
   } else {
@@ -349,14 +349,26 @@ function showResults() {
 
   playWin();
   launchConfetti();
-  setTimeout(() => speakSeq([title, sub, 'Vamos jogar de novo?'], 1.25, 1.20), 500);
+  setTimeout(() => speakSeq([title, sub, 'Vamos jogar de novo?'], 1.20, 1.18), 500);
 }
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
+$('btn-exit').addEventListener('click', () => {
+  initAudio();
+  speak(`Até logo, ${G.name}!`, 0.99, 1.18);
+  setTimeout(() => {
+    G.name = '';
+    localStorage.removeItem('playerName');
+    nameInput.value = '';
+    btnStart.disabled = true;
+    showScreen('screen-name');
+  }, 2500);
+});
+
 $('btn-repeat').addEventListener('click', () => {
   const text = $('question-text').textContent;
-  if (text) speakSeq([text], 1.25, 1.20);
+  if (text) speakSeq([text], 1.20, 1.18);
 });
 
 // ===== INICIALIZAR =====
