@@ -44,32 +44,33 @@ NAME_INPUT → WELCOME → PLAYING → FEEDBACK → PLAYING ... → RESULTS → 
 
 | # | Categoria | Emoji | Qtd |
 |---|-----------|-------|-----|
-| 1 | Animais domésticos | 🐾 | 25 |
-| 2 | Animais selvagens | 🦁 | 30 |
-| 3 | Animais marinhos | 🐬 | 25 |
-| 4 | Animais da fazenda | 🐄 | 20 |
-| 5 | Insetos e pequenos animais | 🐛 | 20 |
-| 6 | Pássaros | 🐦 | 20 |
-| 7 | Dinossauros | 🦕 | 20 |
-| 8 | Frutas | 🍎 | 25 |
-| 9 | Vegetais e legumes | 🥕 | 25 |
-| 10 | Natureza e plantas | 🌿 | 25 |
-| 11 | Estações do ano | 🍂 | 20 |
-| 12 | Clima e tempo | 🌤️ | 25 |
-| 13 | Cores | 🎨 | 20 |
-| 14 | Formas geométricas | 🔷 | 15 |
-| 15 | Números e quantidades | 🔢 | 20 |
-| 16 | Família | 👨‍👩‍👧 | 20 |
-| 17 | Emoções | 💛 | 25 |
-| 18 | Corpo e sentidos | 👃 | 25 |
-| 19 | Escola | 🏫 | 25 |
-| 20 | Transportes | 🚗 | 25 |
-| 21 | Profissões | 👩‍🏫 | 25 |
-| 22 | Alimentos e bebidas | 🍽️ | 30 |
-| 23 | Roupas e acessórios | 👗 | 20 |
-| 24 | Objetos da casa | 🏠 | 25 |
-| 25 | Brinquedos e diversão | 🎮 | 20 |
-| | **TOTAL** | | **≥ 550** |
+| 1 | Animais domésticos | 🐾 | 19 |
+| 2 | Animais selvagens | 🦁 | 19 |
+| 3 | Animais marinhos | 🐬 | 19 |
+| 4 | Animais da fazenda | 🐄 | 19 |
+| 5 | Insetos e pequenos animais | 🐛 | 19 |
+| 6 | Pássaros | 🐦 | 19 |
+| 7 | Dinossauros | 🦕 | 19 |
+| 8 | Frutas | 🍎 | 19 |
+| 9 | Vegetais e legumes | 🥕 | 19 |
+| 10 | Natureza e plantas | 🌿 | 19 |
+| 11 | Estações do ano | 🍂 | 19 |
+| 12 | Clima e tempo | 🌤️ | 19 |
+| 13 | Cores | 🎨 | 19 |
+| 14 | Formas geométricas | 🔷 | 19 |
+| 15 | Números e quantidades | 🔢 | 19 |
+| 16 | Família | 👨‍👩‍👧 | 19 |
+| 17 | Emoções | 💛 | 19 |
+| 18 | Corpo e sentidos | 👃 | 19 |
+| 19 | Escola | 🏫 | 19 |
+| 20 | Transportes | 🚗 | 19 |
+| 21 | Profissões | 👩‍🏫 | 19 |
+| 22 | Alimentos e bebidas | 🍽️ | 19 |
+| 23 | Roupas e acessórios | 👗 | 19 |
+| 24 | Objetos da casa | 🏠 | 19 |
+| 25 | Brinquedos e diversão | 🎮 | 19 |
+| 26 | Espaço e Universo | 🚀 | 25 |
+| | **TOTAL** | | **500** |
 
 ## Como Adicionar Perguntas
 
