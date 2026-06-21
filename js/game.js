@@ -284,7 +284,7 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Cacau é maluca','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Dedé ficou feliz!'])], 0.99, 1.18), 150);
+    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Olha a Cacau!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Dedé ficou feliz!'])], 1.25, 1.20), 150);
     setTimeout(nextQuestion, 2000);
 
   } else {
@@ -331,7 +331,7 @@ function showResults() {
 
   if (s >= 8) {
     stars = '⭐⭐⭐';
-    title = `Você é incrível, ${G.name}! 🏆`;
+    title = `Você é incrível, ${G.name}! `;
     sub   = `Acertou ${s} de 10 perguntas! Fantástico!`;
   } else if (s >= 5) {
     stars = '⭐⭐';
@@ -349,14 +349,14 @@ function showResults() {
 
   playWin();
   launchConfetti();
-  setTimeout(() => speakSeq([title, sub, 'Vamos jogar de novo?'], 0.98, 1.18), 500);
+  setTimeout(() => speakSeq([title, sub, 'Vamos jogar de novo?'], 1.25, 1.20), 500);
 }
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
 $('btn-repeat').addEventListener('click', () => {
   const text = $('question-text').textContent;
-  if (text) speakSeq([text], 0.96, 1.08);
+  if (text) speakSeq([text], 1.25, 1.20);
 });
 
 // ===== INICIALIZAR =====
