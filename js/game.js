@@ -284,7 +284,19 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Até a Cacau sabia essa!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Viva Elisa', 'Viva Tôminhas'])], 1.20, 1.18), 200);
+    setTimeout(() => speakSeq([pick([
+      `Isso mesmo, é ${label}!`,
+      `Parabéns! É ${label}!`,
+      `Você acertou! É ${label}!`,
+      `Excelente! É ${label}!`,
+      `Muito bem! É ${label}!`,
+      `Perfeito! É ${label}!`,
+      `Você é demais! É ${label}!`,
+      `Até a Cacau sabia! É ${label}!`,
+      `Você é uma estrela! É ${label}!`,
+      `Viva Elisa! É ${label}!`,
+      `Viva Tôminhas! É ${label}!`,
+    ])], 1.20, 1.18), 200);
     setTimeout(nextQuestion, 3000);
 
   } else {
