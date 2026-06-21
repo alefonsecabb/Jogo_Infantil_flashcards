@@ -212,7 +212,7 @@ $('btn-play').addEventListener('click', () => { initAudio(); startGame(); });
 function showWelcome() {
   $('welcome-msg').textContent = `Olá, ${G.name}! 🦄❤️👋`;
   showScreen('screen-welcome');
-  setTimeout(() => speakSeq([`Olá, ${G.name}!`, 'Que bom ver vocês Elisa e Neneco!', 'Clique em jogar para começar.'], 1.25, 1.20), 400);
+  setTimeout(() => speakSeq([`Olá, ${G.name}!`, 'Que bom ver vocês Elisa e Tôminhas!', 'Clique em jogar para começar.'], 1.02, 1.18), 400);
 }
 
 // ===== POOL SEM REPETIÇÃO =====
