@@ -284,8 +284,8 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Olha a Cacau!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Dedé ficou feliz!'])], 1.25, 1.20), 150);
-    setTimeout(nextQuestion, 2000);
+    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Olha a Cacau!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Dedé ficou feliz!'])], 1.25, 1.20), 200);
+    setTimeout(nextQuestion, 2200);
 
   } else {
     G.attempts++;
@@ -294,7 +294,7 @@ function handleAnswer(card, isCorrect, label) {
 
     if (G.attempts === 1) {
       $('feedback-text').textContent = '❌ Tente de novo!';
-      setTimeout(() => card.classList.remove('wrong'), 500);
+      setTimeout(() => card.classList.remove('wrong'), 600);
 
     } else {
       // 2ª tentativa errada — revelar a correta
@@ -309,7 +309,7 @@ function handleAnswer(card, isCorrect, label) {
           c.classList.add('disabled');
         }
       });
-      setTimeout(nextQuestion, 2600);
+      setTimeout(nextQuestion, 2800);
     }
   }
 }
@@ -331,7 +331,7 @@ function showResults() {
 
   if (s >= 8) {
     stars = '⭐⭐⭐';
-    title = `Você é incrível, ${G.name}! `;
+    title = `Você é incrível, ${G.name}!`;
     sub   = `Acertou ${s} de 10 perguntas! Fantástico!`;
   } else if (s >= 5) {
     stars = '⭐⭐';
