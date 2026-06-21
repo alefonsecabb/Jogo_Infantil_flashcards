@@ -24,7 +24,7 @@ A **zero-dependency**, **framework-free** educational quiz game built for childr
 |---|---|
 | 🗣️ **Voice-first UX** | Every question is read aloud via the **Web Speech API** (pt-BR). Voices are ranked: Google TTS → Microsoft (Francisca/Maria) → macOS Luciana → system default |
 | 🎴 **Emoji flashcards** | 4 large emoji + label cards per question, optimised for touch targets on any screen size |
-| 🔁 **No-repeat question pool** | 250 questions across 25 categories. Already-seen IDs are stored in `localStorage`; the pool resets only after all 250 have been played |
+| 🔁 **No-repeat question pool** | 500 questions across 26 categories. Already-seen IDs are stored in `localStorage`; the pool resets only after all 500 have been played |
 | 🎉 **3 celebration types** | Chosen at random on each correct answer: canvas confetti burst, animated rainbow overlay, or flying unicorn |
 | 🔊 **Procedural audio** | Correct / wrong / win sounds generated on the fly with **Web Audio API** — zero audio file dependencies |
 | 👧 **Personalised session** | Child's name is persisted in `localStorage` and woven into every spoken phrase |
@@ -57,7 +57,7 @@ Jogo_Infantil_flashcards/
 ├── css/
 │   └── style.css       # Child-friendly design, animations, full responsiveness
 └── js/
-    ├── questions.js    # 250 questions in 25 categories (compact IIFE format)
+    ├── questions.js    # 500 questions in 26 categories (compact IIFE format)
     └── game.js         # State machine · TTS engine · audio · pool · celebrations
 ```
 
@@ -125,7 +125,7 @@ function playCorrect() {
 
 ## 📚 Question Bank
 
-250 questions, 4 options each (1 correct + 3 plausible distractors), spanning 25 categories:
+**500 questions**, 4 options each (1 correct + 3 plausible distractors), spanning **26 categories**:
 
 | # | Category | Emoji | # | Category | Emoji |
 |---|---|:---:|---|---|:---:|
@@ -141,14 +141,16 @@ function playCorrect() {
 | 10 | Nature & plants | 🌿 | 23 | Clothes | 👗 |
 | 11 | Seasons | 🍂 | 24 | Household objects | 🏠 |
 | 12 | Weather | 🌤️ | 25 | Toys & fun | 🎮 |
-| 13 | Colours | 🎨 | | **Total: 250** | |
+| 13 | Colours | 🎨 | **26** | **Space & Universe** | 🚀 |
+
+> **Category 26 — Space & Universe** is new (IDs 476–500): planets, astronauts, rockets, stars, the Moon, gravity, telescopes and more — designed to spark scientific curiosity in young children.
 
 ### Adding Questions
 Append entries to the array in `js/questions.js` using the compact helper:
 ```javascript
 // q(id, category, question_text, [correct_emoji, correct_label], [wrong1], [wrong2], [wrong3])
-q(251, 'frutas', 'Qual fruta é amarela por dentro e tem semente grande?',
-  ['🥭','Manga'], ['🍌','Banana'], ['🍋','Limão'], ['🍊','Laranja']),
+q(501, 'frutas', 'Qual fruta tem casca vermelha e é crocante por dentro?',
+  ['🍎','Maçã'], ['🍊','Laranja'], ['🍋','Limão'], ['🍇','Uva']),
 ```
 
 ---
