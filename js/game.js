@@ -212,7 +212,7 @@ $('btn-play').addEventListener('click', () => { initAudio(); startGame(); });
 function showWelcome() {
   $('welcome-msg').textContent = `Olá, ${G.name}! 🦄❤️👋`;
   showScreen('screen-welcome');
-  setTimeout(() => speakSeq([`Olá, ${G.name}!`, 'Que bom te ver!', 'Clique em jogar para começar.'], 1.25, 1.20), 400);
+  setTimeout(() => speakSeq([`Olá, ${G.name}!`, 'Que bom ver vocês Elisa e Neneco!', 'Clique em jogar para começar.'], 1.25, 1.20), 400);
 }
 
 // ===== POOL SEM REPETIÇÃO =====
@@ -284,8 +284,8 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Olha a Cacau!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Dedé ficou feliz!'])], 1.25, 1.20), 200);
-    setTimeout(nextQuestion, 2200);
+    setTimeout(() => speakSeq([pick(['Você acertou!','Você é demais!' ,'Até a Cacau sabia essa!','Parabéns!', 'Isso mesmo!','Você é uma estrela!', 'Excelente!', 'Muito bem!','Perfeito!', 'Viva Elisa', 'Viva Tôminhas'])], 1.25, 1.20), 200);
+    setTimeout(nextQuestion, 3000);
 
   } else {
     G.attempts++;
