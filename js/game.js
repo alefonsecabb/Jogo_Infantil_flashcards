@@ -292,7 +292,7 @@ function handleAnswer(card, isCorrect, label) {
       `Muito bem! É ${label}!`,
       `Perfeito! É ${label}!`,
       `Você é demais! É ${label}!`,
-      `Até a Cacau sabia! É ${label}!`,
+      `Essa você sabia! É ${label}!`,
       `Você é uma estrela! É ${label}!`,
       `Viva, você acertou! É ${label}!`,
       `Ótimo trabalho! É ${label}!`,
