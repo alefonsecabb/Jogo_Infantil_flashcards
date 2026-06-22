@@ -296,7 +296,7 @@ function handleAnswer(card, isCorrect, label) {
       `Você é uma estrela! É ${label}!`,
       `Viva, você acertou! É ${label}!`,
       `Ótimo trabalho! É ${label}!`,
-    ])], 1.20, 1.18), 200);
+    ])], 1.06, 1.18), 200);
     setTimeout(nextQuestion, 3000);
 
   } else {
