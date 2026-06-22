@@ -210,9 +210,9 @@ function beginFromName() {
 $('btn-play').addEventListener('click', () => { initAudio(); startGame(); });
 
 function showWelcome() {
-  $('welcome-msg').textContent = `Olá, ${G.name}! 🦄❤️👋`;
+  $('welcome-msg').textContent = `Olá ${G.name}! 🦄❤️👋`;
   showScreen('screen-welcome');
-  setTimeout(() => speakSeq([`Olá, ${G.name}!`, 'Que bom ver vocês aqui!', 'Clique em jogar para começar.'], 1.05, 1.18), 400);
+  setTimeout(() => speakSeq([`Olá ${G.name}!`, 'Que bom ver você aqui!', 'Clique em jogar para começar.'], 1.06, 1.18), 400);
 }
 
 // ===== POOL SEM REPETIÇÃO =====
