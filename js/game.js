@@ -343,7 +343,7 @@ function showResults() {
 
   if (s >= 8) {
     stars = '⭐⭐⭐';
-    title = `Você é incrível, ${G.name}!`;
+    title = `Você é incrível ${G.name}!`;
     sub   = `Acertou ${s} de 10 perguntas! Fantástico!`;
   } else if (s >= 5) {
     stars = '⭐⭐';
