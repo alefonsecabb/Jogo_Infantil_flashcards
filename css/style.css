@@ -258,6 +258,16 @@ h1 {
   line-height: 1;
   display: block;
 }
+
+.card-image {
+  width: clamp(48px, 16vmin, 96px);
+  height: clamp(48px, 16vmin, 96px);
+  object-fit: contain;
+  display: block;
+}
+.card-image[hidden] {
+  display: none;
+}
 .card-label {
   font-family: var(--font-body);
   font-weight: 900;
@@ -403,4 +413,5 @@ h1 {
   #cards-grid  { grid-column: 2; grid-row: 2; }
   .feedback-text { grid-column: 1 / -1; }
   .card-emoji { font-size: 28px; }
+  .card-image { width: 28px; height: 28px; }
 }

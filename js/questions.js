@@ -1,15 +1,17 @@
 /* Banco de perguntas — 500 questões em 26 categorias
    Formato: q(id, categoria, pergunta, [certa], [errada1], [errada2], [errada3])
+   Cada opção é [emoji, label] ou [emoji, label, 'img/options/arquivo.webp']
+   Quando há imagem, ela substitui o emoji na tela (emoji ainda serve de fallback).
    O jogo embaralha as opções antes de exibir. */
 const QUESTIONS = (function () {
   function q(id, cat, text, c, w1, w2, w3) {
     return {
       id, category: cat, question: text,
       options: [
-        { emoji: c[0],  label: c[1],  correct: true  },
-        { emoji: w1[0], label: w1[1], correct: false },
-        { emoji: w2[0], label: w2[1], correct: false },
-        { emoji: w3[0], label: w3[1], correct: false },
+        { emoji: c[0],  label: c[1],  correct: true,  image: c[2]  },
+        { emoji: w1[0], label: w1[1], correct: false, image: w1[2] },
+        { emoji: w2[0], label: w2[1], correct: false, image: w2[2] },
+        { emoji: w3[0], label: w3[1], correct: false, image: w3[2] },
       ]
     };
   }
@@ -154,7 +156,7 @@ const QUESTIONS = (function () {
     q(62,'dinossauros','Qual dinossauro era carnívoro e tinha bracinhos pequenos?',
       ['🦖','T-Rex'],['🦕','Braquiossauro'],['🦎','Lagarto'],['🐊','Crocodilo']),
     q(63,'dinossauros','Qual dinossauro tinha três chifres na cabeça?',
-      ['🦏','Triceratops'],['🦖','T-Rex'],['🦕','Braquiossauro'],['🐉','Dragão']),
+      ['🦏','Triceratops','img/options/triceratops.webp'],['🦖','T-Rex'],['🦕','Braquiossauro'],['🐉','Dragão']),
     q(64,'dinossauros','Qual dinossauro tinha placas ósseas nas costas?',
       ['🦎','Estegossauro'],['🦖','T-Rex'],['🦕','Braquiossauro'],['🐊','Crocodilo']),
     q(65,'dinossauros','Qual dinossauro voava no céu pré-histórico?',

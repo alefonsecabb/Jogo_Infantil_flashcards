@@ -256,7 +256,16 @@ function showQuestion() {
   const cards = document.querySelectorAll('.card');
   cards.forEach((card, i) => {
     const opt = G.currentOptions[i];
-    card.querySelector('.card-emoji').textContent = opt.emoji;
+    const imgEl = card.querySelector('.card-image');
+    if (opt.image) {
+      imgEl.src = opt.image;
+      imgEl.hidden = false;
+      card.querySelector('.card-emoji').textContent = '';
+    } else {
+      imgEl.hidden = true;
+      imgEl.removeAttribute('src');
+      card.querySelector('.card-emoji').textContent = opt.emoji;
+    }
     card.querySelector('.card-label').textContent = opt.label;
     card.className = 'card'; // reset all states
   });
