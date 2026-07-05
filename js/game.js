@@ -301,7 +301,7 @@ function handleAnswer(card, isCorrect, label) {
       `Muito bem! É ${label}!`,
       `Perfeito! É ${label}!`,
       `Você é demais! É ${label}!`,
-      `Essa você sabia! É ${label}!`,
+      `Éssa você sabia! É ${label}!`,
       `Você é uma estrela! É ${label}!`,
       `Viva, você acertou! É ${label}!`,
       `Ótimo trabalho! É ${label}!`,
@@ -377,7 +377,7 @@ $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
 $('btn-exit').addEventListener('click', () => {
   initAudio();
-  speak(`Até logo, ${G.name}!`, 0.99, 1.18);
+  speak(`Até logo, ${G.name}!`, 1.05, 1.18);
   setTimeout(() => {
     G.name = '';
     localStorage.removeItem('playerName');
