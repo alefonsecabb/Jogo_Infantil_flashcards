@@ -319,7 +319,7 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick(t('celebrations')(label))], 1.06, 1.18), 200);
+    setTimeout(() => speakSeq([pick(t('celebrations')(label))], 1.02, 1.18), 200);
     setTimeout(nextQuestion, 3000);
 
   } else {
@@ -339,7 +339,7 @@ function handleAnswer(card, isCorrect, label) {
         const idx = parseInt(c.dataset.idx);
         if (G.currentOptions[idx] && G.currentOptions[idx].correct) {
           c.classList.add('reveal');
-          speakSeq([t('revealCorrect')(G.currentOptions[idx].label)], 0.99, 1.18);
+          speakSeq([t('revealCorrect')(G.currentOptions[idx].label)], 1.05, 1.18);
         } else {
           c.classList.add('disabled');
         }
@@ -371,14 +371,14 @@ function showResults() {
 
   playWin();
   launchConfetti();
-  setTimeout(() => speakSeq([title, sub, t('playAgainClose')], 1.20, 1.18), 500);
+  setTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.99, 1.18), 500);
 }
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
 $('btn-exit').addEventListener('click', () => {
   initAudio();
-  speak(t('farewell')(G.name), 1.05, 1.18);
+  speak(t('farewell')(G.name), 0.99, 1.18);
   setTimeout(() => {
     G.name = '';
     localStorage.removeItem('playerName');
@@ -390,7 +390,7 @@ $('btn-exit').addEventListener('click', () => {
 
 $('btn-repeat').addEventListener('click', () => {
   const text = $('question-text').textContent;
-  if (text) speakSeq([text], 1.20, 1.18);
+  if (text) speakSeq([text], 1.05, 1.18);
 });
 
 // ===== INICIALIZAR =====
