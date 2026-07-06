@@ -650,7 +650,7 @@ const QUESTIONS = (function () {
 
     // ── 5b. INSETOS (novas) ───────────────────────────────────────────────────
     q(287,'insetos','Qual inseto parece um helicóptero?',
-      ['🚁','Libélula'],['🦋','Borboleta'],['🐝','Abelha'],['🦟','Mosquito']),
+      ['🚁','Libélula', 'img/options/libelula.webp'],['🦋','Borboleta'],['🐝','Abelha'],['🦟','Mosquito']),
     q(288,'insetos','Qual inseto é verde e parece um galho de planta?',
       ['🌿','Bicho-pau'],['🐛','Lagarta'],['🐜','Formiga'],['🦗','Grilo']),
     q(289,'insetos','Qual inseto tem luz na barriga e brilha à noite?',
