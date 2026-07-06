@@ -3,15 +3,19 @@
 // ===== STATE =====
 const G = {
   name: '',
+  lang: 'pt',      // 'pt' or 'en'
   questions: [],   // 10 questions for current session
   current: 0,      // index into questions[]
   score: 0,
   attempts: 0,     // attempts on current question
   locked: false,   // block card clicks while animating
-  voice: null,
+  voicePt: null,
+  voiceEn: null,
   audioCtx: null,
   currentOptions: [], // shuffled options for current question
 };
+
+function currentVoice() { return G.lang === 'en' ? G.voiceEn : G.voicePt; }
 
 // ===== UTILS =====
 function $(id) { return document.getElementById(id); }
@@ -39,13 +43,22 @@ function loadVoice() {
   if (!voices.length) return;
   const pt = voices.filter(v => /pt[-_]BR/i.test(v.lang));
   // Prefere vozes de alta qualidade (Google > Microsoft > demais)
-  G.voice =
+  G.voicePt =
     pt.find(v => /google/i.test(v.name)) ||
     pt.find(v => /francisca|maria/i.test(v.name)) ||
     pt.find(v => /luciana/i.test(v.name)) ||
     pt.find(v => /female|camila|vitoria|ana/i.test(v.name)) ||
     pt[0] ||
     voices.find(v => /pt/i.test(v.lang)) ||
+    null;
+
+  const en = voices.filter(v => /en[-_]US/i.test(v.lang));
+  G.voiceEn =
+    en.find(v => /google/i.test(v.name)) ||
+    en.find(v => /samantha|zira|jenny|aria/i.test(v.name)) ||
+    en.find(v => /female/i.test(v.name)) ||
+    en[0] ||
+    voices.find(v => /en/i.test(v.lang)) ||
     null;
 }
 
@@ -62,11 +75,12 @@ function speakSeq(phrases, rate = 0.99, pitch = 1.18) {
   function next() {
     if (i >= phrases.length) return;
     const u = new SpeechSynthesisUtterance(phrases[i++]);
-    u.lang   = 'pt-BR';
+    u.lang   = G.lang === 'en' ? 'en-US' : 'pt-BR';
     u.rate   = rate;
     u.pitch  = pitch;
     u.volume = 1;
-    if (G.voice) u.voice = G.voice;
+    const v = currentVoice();
+    if (v) u.voice = v;
     u.onend = () => setTimeout(next, 120);
     speechSynthesis.speak(u);
   }
@@ -188,6 +202,18 @@ function showOverlay(emoji, rainbow) {
   }, 1800);
 }
 
+// ===== TELA IDIOMA =====
+function selectLanguage(lang) {
+  G.lang = lang;
+  localStorage.setItem('lang', lang);
+  applyI18n();
+  document.querySelectorAll('.flag-btn').forEach(b => b.classList.remove('selected'));
+  $(`btn-lang-${lang}`).classList.add('selected');
+  showScreen('screen-name');
+}
+$('btn-lang-pt').addEventListener('click', () => { initAudio(); selectLanguage('pt'); });
+$('btn-lang-en').addEventListener('click', () => { initAudio(); selectLanguage('en'); });
+
 // ===== TELA NOME =====
 const nameInput = $('name-input');
 const btnStart  = $('btn-start');
@@ -210,9 +236,9 @@ function beginFromName() {
 $('btn-play').addEventListener('click', () => { initAudio(); startGame(); });
 
 function showWelcome() {
-  $('welcome-msg').textContent = `Olá ${G.name}! 🦄❤️👋`;
+  $('welcome-msg').textContent = `${t('greeting')(G.name)[0]} 🦄❤️👋`;
   showScreen('screen-welcome');
-  setTimeout(() => speakSeq([`Olá ${G.name}!`, 'Que bom ver você aqui!', 'Clique em jogar para começar.'], 1.06, 1.18), 400);
+  setTimeout(() => speakSeq(t('greeting')(G.name), 1.06, 1.18), 400);
 }
 
 // ===== POOL SEM REPETIÇÃO =====
@@ -242,7 +268,7 @@ function startGame() {
 }
 
 function showQuestion() {
-  const q = G.questions[G.current];
+  const q = localizeQuestion(G.questions[G.current]);
   G.attempts = 0;
   G.locked   = false;
 
@@ -293,19 +319,7 @@ function handleAnswer(card, isCorrect, label) {
     $('q-score').textContent = `✅ ${G.score}`;
 
     celebrate();
-    setTimeout(() => speakSeq([pick([
-      `Isso mesmo, É ${label}!`,
-      `Parabéns! É ${label}!`,
-      `Você acertou! É ${label}!`,
-      `Excelente! É ${label}!`,
-      `Muito bem! É ${label}!`,
-      `Perfeito! É ${label}!`,
-      `Você é demais! É ${label}!`,
-      `Éssa você sabia! É ${label}!`,
-      `Você é uma estrela! É ${label}!`,
-      `Viva, você acertou! É ${label}!`,
-      `Ótimo trabalho! É ${label}!`,
-    ])], 1.06, 1.18), 200);
+    setTimeout(() => speakSeq([pick(t('celebrations')(label))], 1.06, 1.18), 200);
     setTimeout(nextQuestion, 3000);
 
   } else {
@@ -314,18 +328,18 @@ function handleAnswer(card, isCorrect, label) {
     playWrong();
 
     if (G.attempts === 1) {
-      $('feedback-text').textContent = '❌ Tente de novo!';
+      $('feedback-text').textContent = t('feedbackRetry');
       setTimeout(() => card.classList.remove('wrong'), 600);
 
     } else {
       // 2ª tentativa errada — revelar a correta
       G.locked = true;
-      $('feedback-text').textContent = '💡 A resposta certa era...';
+      $('feedback-text').textContent = t('feedbackReveal');
       document.querySelectorAll('.card').forEach(c => {
         const idx = parseInt(c.dataset.idx);
         if (G.currentOptions[idx] && G.currentOptions[idx].correct) {
           c.classList.add('reveal');
-          speakSeq([`A resposta certa é: ${G.currentOptions[idx].label}.`], 0.99, 1.18);
+          speakSeq([t('revealCorrect')(G.currentOptions[idx].label)], 0.99, 1.18);
         } else {
           c.classList.add('disabled');
         }
@@ -348,21 +362,8 @@ function nextQuestion() {
 function showResults() {
   showScreen('screen-results');
   const s = G.score;
-  let stars, title, sub;
-
-  if (s >= 8) {
-    stars = '⭐⭐⭐';
-    title = `Você é incrível ${G.name}!`;
-    sub   = `Acertou ${s} de 10 perguntas! Fantástico!`;
-  } else if (s >= 5) {
-    stars = '⭐⭐';
-    title = `Muito bem, ${G.name}! 😊`;
-    sub   = `Acertou ${s} de 10 perguntas! Continue praticando!`;
-  } else {
-    stars = '⭐';
-    title = `Boa tentativa, ${G.name}! 💪`;
-    sub   = `Acertou ${s} de 10 perguntas. Vamos praticar mais!`;
-  }
+  const tier = s >= 8 ? 'high' : s >= 5 ? 'mid' : 'low';
+  const { stars, title, sub } = t('resultTiers')[tier](G.name, s);
 
   $('result-stars').textContent   = stars;
   $('result-title').textContent   = title;
@@ -370,14 +371,14 @@ function showResults() {
 
   playWin();
   launchConfetti();
-  setTimeout(() => speakSeq([title, sub, 'Vamos jogar de novo?'], 1.20, 1.18), 500);
+  setTimeout(() => speakSeq([title, sub, t('playAgainClose')], 1.20, 1.18), 500);
 }
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
 $('btn-exit').addEventListener('click', () => {
   initAudio();
-  speak(`Até logo, ${G.name}!`, 1.05, 1.18);
+  speak(t('farewell')(G.name), 1.05, 1.18);
   setTimeout(() => {
     G.name = '';
     localStorage.removeItem('playerName');
@@ -394,6 +395,14 @@ $('btn-repeat').addEventListener('click', () => {
 
 // ===== INICIALIZAR =====
 (function init() {
+  const savedLang = localStorage.getItem('lang');
+  if (savedLang) {
+    G.lang = savedLang;
+    applyI18n();
+    const btn = $(`btn-lang-${savedLang}`);
+    if (btn) btn.classList.add('selected');
+  }
+
   const saved = localStorage.getItem('playerName');
   if (saved) {
     nameInput.value   = saved;

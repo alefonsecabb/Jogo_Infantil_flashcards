@@ -18,22 +18,26 @@ Jogo educativo para Elisa (5 anos) e crianças de 4 a 6 anos. Perguntas faladas 
 
 ```
 Projeto_jogo_Infantil_Elisa/
-├── index.html          # 4 telas: Nome, Boas-vindas, Jogo, Resultado
+├── index.html          # 5 telas: Idioma, Nome, Boas-vindas, Jogo, Resultado
 ├── CLAUDE.md           # este arquivo — histórico do projeto
 ├── README.md           # documentação pública
 ├── css/
 │   └── style.css       # design infantil colorido + todas as animações
+├── img/options/        # imagens customizadas das opções de resposta
 └── js/
-    ├── questions.js    # banco com ≥500 perguntas (25 categorias)
-    └── game.js         # lógica, TTS, áudio, estados, celebrações
+    ├── questions.js    # banco com 500 perguntas (26 categorias), em português
+    ├── questions.en.js # traduções em inglês das 500 perguntas, indexadas por id
+    ├── i18n.js         # dicionário pt/en da interface e da fala + helpers de tradução
+    └── game.js         # lógica, TTS, áudio, estados, celebrações, idioma
 ```
 
 ## Fluxo do Jogo
 
 ```
-NAME_INPUT → WELCOME → PLAYING → FEEDBACK → PLAYING ... → RESULTS → WELCOME
+LANGUAGE → NAME_INPUT → WELCOME → PLAYING → FEEDBACK → PLAYING ... → RESULTS → WELCOME
 ```
 
+0. **LANGUAGE**: Tela inicial com bandeiras 🇧🇷/🇺🇸; escolha salva em localStorage (`lang`) e reaplicada a cada visita (mas sempre exibida, sem pular — mesmo padrão do nome)
 1. **NAME_INPUT**: Pais digitam o nome da criança (salvo em localStorage)
 2. **WELCOME**: Voz saúda pelo nome + botão "Jogar"
 3. **PLAYING**: Pergunta falada automaticamente; 4 flashcards clicáveis; botão 🔊 para repetir
@@ -90,6 +94,15 @@ Edite `js/questions.js` e adicione objetos no array `QUESTIONS` seguindo este mo
 }
 ```
 
+## Suporte a Inglês (i18n)
+
+O jogo é bilíngue (português/inglês), escolhido na tela de bandeiras no início:
+
+- `js/questions.en.js` traduz as 500 perguntas, indexado por `id` (mesmo `id` de `js/questions.js`). Cobertura parcial é segura: qualquer pergunta sem tradução aparece em português automaticamente (fallback campo a campo em `localizeQuestion()`).
+- `js/i18n.js` tem o dicionário `UI_STRINGS.pt`/`UI_STRINGS.en` com todos os textos fixos da interface e as frases faladas, mais `applyI18n()` (aplica texto nos elementos `data-i18n*`) e `localizeQuestion()`.
+- **Ao adicionar uma pergunta nova em `questions.js`, não é obrigatório traduzir na hora** — ela some aparece em português até alguém adicionar a entrada correspondente em `questions.en.js` (mesmo `id`, campo `o` na mesma ordem das opções autorais: `[certa, errada1, errada2, errada3]`).
+- A voz (Web Speech API) troca de idioma junto — `G.voicePt`/`G.voiceEn` calculadas em `loadVoice()` (game.js), cada uma com sua cadeia de preferência de voz.
+
 ## Como Fazer Deploy
 
 ```bash
@@ -114,8 +127,13 @@ O GitHub Pages atualiza automaticamente em 1–2 minutos.
 - [x] Responsivo: funciona em tablet, celular e PC
 - [x] Orientação retrato e paisagem suportadas
 - [x] Sem necessidade de internet após o carregamento inicial
+- [x] Suporte bilíngue português/inglês com seletor de bandeiras e voz nativa em cada idioma
 
 ## Changelog
+
+### 2026-07-05 — v1.1.0
+- Suporte a inglês: tela de seleção de idioma (bandeiras 🇧🇷/🇺🇸), tradução das 500 perguntas (`js/questions.en.js`), dicionário de interface e fala (`js/i18n.js`), voz nativa em inglês via Web Speech API
+- Imagens customizadas por opção de resposta (`img/options/`), substituindo emojis genéricos em espécies/objetos específicos
 
 ### 2026-06-20 — v1.0.0
 - Criação inicial do projeto

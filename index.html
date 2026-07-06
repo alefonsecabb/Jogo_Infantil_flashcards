@@ -25,14 +25,27 @@
   <canvas id="confetti-canvas"></canvas>
   <div id="celebration-overlay"></div>
 
+  <!-- TELA 0: Idioma -->
+  <div id="screen-language" class="screen active">
+    <div class="screen-card">
+      <div class="title-emoji">🌍</div>
+      <h1 data-i18n="title">Vamos Aprender!</h1>
+      <p class="subtitle" data-i18n="pickLanguage">Escolha o idioma / Choose your language</p>
+      <div class="flag-row">
+        <button id="btn-lang-pt" class="flag-btn" aria-label="Português (Brasil)">🇧🇷</button>
+        <button id="btn-lang-en" class="flag-btn" aria-label="English (US)">🇺🇸</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TELA 1: Nome -->
-  <div id="screen-name" class="screen active">
+  <div id="screen-name" class="screen">
     <div class="screen-card">
       <div class="title-emoji">🦄</div>
-      <h1>Vamos Aprender!</h1>
-      <p class="subtitle">Qual é o seu nome?</p>
-      <input id="name-input" type="text" placeholder="Digite seu nome..." maxlength="20" autocomplete="off" spellcheck="false">
-      <button id="btn-start" class="btn-primary" disabled>Começar! 🚀</button>
+      <h1 data-i18n="title">Vamos Aprender!</h1>
+      <p class="subtitle" data-i18n="nameSubtitle">Qual é o seu nome?</p>
+      <input id="name-input" type="text" data-i18n-placeholder="namePlaceholder" placeholder="Digite seu nome..." maxlength="20" autocomplete="off" spellcheck="false">
+      <button id="btn-start" class="btn-primary" data-i18n="btnStart" disabled>Começar! 🚀</button>
     </div>
   </div>
 
@@ -41,9 +54,9 @@
     <div class="screen-card">
       <div class="title-emoji">🌟</div>
       <h1 id="welcome-msg">Olá!</h1>
-      <p class="subtitle">Pronto para aprender coisas incríveis?</p>
+      <p class="subtitle" data-i18n="welcomeSubtitle">Pronto para aprender coisas incríveis?</p>
       <div class="preview-stars">⭐⭐⭐</div>
-      <button id="btn-play" class="btn-primary">Jogar! 🎮</button>
+      <button id="btn-play" class="btn-primary" data-i18n="btnPlay">Jogar! 🎮</button>
     </div>
   </div>
 
@@ -57,7 +70,7 @@
       </div>
 
       <div class="question-box">
-        <button id="btn-repeat" aria-label="Repetir pergunta">🔊</button>
+        <button id="btn-repeat" data-i18n-aria="btnRepeatAria" aria-label="Repetir pergunta">🔊</button>
         <p id="question-text">...</p>
       </div>
 
@@ -95,12 +108,14 @@
       <div id="result-stars" class="result-stars"></div>
       <h1 id="result-title"></h1>
       <p id="result-subtitle" class="subtitle"></p>
-      <button id="btn-replay" class="btn-primary">Jogar de novo! 🔄</button>
-      <button id="btn-exit" class="btn-secondary">Sair 👋</button>
+      <button id="btn-replay" class="btn-primary" data-i18n="btnReplay">Jogar de novo! 🔄</button>
+      <button id="btn-exit" class="btn-secondary" data-i18n="btnExit">Sair 👋</button>
     </div>
   </div>
 
   <script src="js/questions.js"></script>
+  <script src="js/questions.en.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>

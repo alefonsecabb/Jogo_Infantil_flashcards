@@ -210,6 +210,29 @@ h1 {
 #btn-repeat:hover  { background: #f0f0f0; }
 #btn-repeat:active { transform: scale(0.88); }
 
+.flag-row {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+}
+.flag-btn {
+  font-size: clamp(36px, 9vw, 48px);
+  background: none;
+  border: 3px solid transparent;
+  cursor: pointer;
+  width: clamp(72px, 18vw, 92px);
+  height: clamp(72px, 18vw, 92px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s, border-color 0.2s;
+  box-shadow: var(--shadow);
+}
+.flag-btn:hover     { background: #f0f0f0; transform: translateY(-2px); }
+.flag-btn:active    { transform: scale(0.92); }
+.flag-btn.selected  { border-color: var(--bg-start); }
+
 #question-text {
   font-family: var(--font-body);
   font-size: clamp(15px, 3.5vw, 21px);
