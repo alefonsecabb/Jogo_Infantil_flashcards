@@ -371,7 +371,7 @@ function showResults() {
 
   playWin();
   launchConfetti();
-  setTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.99, 1.18), 500);
+  setTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.93, 1.18), 500);
 }
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
@@ -384,7 +384,7 @@ $('btn-exit').addEventListener('click', () => {
     localStorage.removeItem('playerName');
     nameInput.value = '';
     btnStart.disabled = true;
-    showScreen('screen-name');
+    showScreen('screen-language');
   }, 2500);
 });
 
