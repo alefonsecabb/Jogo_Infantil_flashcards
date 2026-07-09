@@ -214,7 +214,7 @@ const QUESTIONS = (function () {
     q(89,'vegetais','Qual vegetal é amarelo e tem "cabelo" de sêda?',
       ['🌽','Milho'],['🍌','Banana'],['🍋','Limão'],['🧅','Cebola']),
     q(90,'vegetais','Qual vegetal podemos escolher verde, amarelo ou vermelho?',
-      ['🫑','Pimentão vermelho'],['🍅','Tomate'],['🍓','Morango'],['🍎','Maçã']),
+      ['🫑','Pimentão'],['🍅','Tomate'],['🍓','Morango'],['🍎','Maçã']),
 
     // ── 10. NATUREZA E PLANTAS ────────────────────────────────────────────
     q(91,'natureza','Qual parte da planta fica debaixo da terra?',
