@@ -219,6 +219,7 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
   const overlay  = $('video-overlay');
   const player   = $('video-overlay-player');
   const fallback = $('video-overlay-fallback');
+  const grain    = $('video-overlay-grain');
   overlay.classList.add('active');
 
   let done = false;
@@ -232,10 +233,23 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
     player.removeAttribute('src');
     player.load();
     player.style.display = '';
+    player.classList.remove('fading');
     fallback.style.display = 'none';
     fallback.textContent = '';
     fallback.style.animation = '';
+    fallback.classList.remove('fading');
+    grain.classList.remove('active');
     if (onEnd) onEnd();
+  };
+
+  // Dissolve suave (vídeo/emoji esmaecendo + grão de filme) antes de fechar
+  // o overlay — evita o corte seco no final da revelação.
+  const fadeAndFinish = () => {
+    if (done) return;
+    const visible = player.style.display === 'none' ? fallback : player;
+    visible.classList.add('fading');
+    grain.classList.add('active');
+    scheduleTimeout(finish, 650);
   };
 
   player.onerror = () => {
@@ -243,9 +257,9 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
     fallback.style.display = 'flex';
     fallback.textContent = fallbackEmoji || '🎉';
     fallback.style.animation = 'pop-in 0.45s ease';
-    scheduleTimeout(finish, 1800);
+    scheduleTimeout(fadeAndFinish, 1400);
   };
-  player.onended = finish;
+  player.onended = fadeAndFinish;
 
   player.style.display = '';
   fallback.style.display = 'none';
@@ -259,17 +273,23 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
   });
 }
 
-// Fecha o overlay de vídeo imediatamente, sem disparar onEnd — usado quando
-// a criança navega para outra tela no meio de uma revelação.
+// Fecha o overlay de vídeo imediatamente, sem disparar onEnd nem a
+// dissolve suave — usado quando a criança navega para outra tela no meio
+// de uma revelação.
 function forceCloseVideoOverlay() {
-  const overlay = $('video-overlay');
-  const player  = $('video-overlay-player');
+  const overlay  = $('video-overlay');
+  const player   = $('video-overlay-player');
+  const fallback = $('video-overlay-fallback');
+  const grain    = $('video-overlay-grain');
   overlay.classList.remove('active');
   player.onended = null;
   player.onerror = null;
   player.pause();
   player.removeAttribute('src');
   player.load();
+  player.classList.remove('fading');
+  fallback.classList.remove('fading');
+  grain.classList.remove('active');
 }
 
 function showOverlay(emoji, rainbow) {
