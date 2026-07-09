@@ -13,6 +13,9 @@ const G = {
   voiceEn: null,
   audioCtx: null,
   currentOptions: [], // shuffled options for current question
+  coins: 0,             // saldo de moedas do jogador ativo (espelha localStorage)
+  badges: [],            // slugs de categoria conquistados (ordem)
+  pendingTimeouts: [],   // setTimeout ids da sequência de revelação de RESULTS
 };
 
 function currentVoice() { return G.lang === 'en' ? G.voiceEn : G.voicePt; }
@@ -31,10 +34,30 @@ function shuffle(arr) {
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+// setTimeout rastreado: usado na sequência de revelação de RESULTS (moeda/
+// badge) para poder cancelar tudo se a criança navegar no meio da animação.
+function scheduleTimeout(fn, delay) {
+  const id = setTimeout(fn, delay);
+  G.pendingTimeouts.push(id);
+  return id;
+}
+function clearPendingTimeouts() {
+  G.pendingTimeouts.forEach(clearTimeout);
+  G.pendingTimeouts = [];
+}
+
 // ===== SCREENS =====
 function showScreen(id) {
+  // Qualquer troca de tela interrompe uma eventual sequência de revelação
+  // de moeda/badge pendente (ex.: criança clicou "Jogar de novo!" ou abriu
+  // o álbum enquanto o vídeo ainda tocava).
+  clearPendingTimeouts();
+  forceCloseVideoOverlay();
+
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
+  $('btn-book').style.display = (id === 'screen-language') ? 'none' : '';
+  $('book-menu').classList.remove('open');
 }
 
 // ===== TTS =====
@@ -188,6 +211,67 @@ function launchConfetti() {
   })();
 }
 
+// ===== OVERLAY DE VÍDEO (moeda / badge) =====
+// Toca um vídeo fullscreen; se o arquivo não existir (404) ou o autoplay for
+// bloqueado, cai automaticamente para um emoji animado — nunca trava a
+// sequência de revelação. onEnd é sempre chamado exatamente uma vez.
+function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
+  const overlay  = $('video-overlay');
+  const player   = $('video-overlay-player');
+  const fallback = $('video-overlay-fallback');
+  overlay.classList.add('active');
+
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    overlay.classList.remove('active');
+    player.onended = null;
+    player.onerror = null;
+    player.pause();
+    player.removeAttribute('src');
+    player.load();
+    player.style.display = '';
+    fallback.style.display = 'none';
+    fallback.textContent = '';
+    fallback.style.animation = '';
+    if (onEnd) onEnd();
+  };
+
+  player.onerror = () => {
+    player.style.display = 'none';
+    fallback.style.display = 'flex';
+    fallback.textContent = fallbackEmoji || '🎉';
+    fallback.style.animation = 'pop-in 0.45s ease';
+    scheduleTimeout(finish, 1800);
+  };
+  player.onended = finish;
+
+  player.style.display = '';
+  fallback.style.display = 'none';
+  player.src = src;
+  player.muted = false;
+  player.play().catch(() => {
+    // Autoplay com som bloqueado pelo navegador — tenta mudo em vez de
+    // desistir do vídeo (melhor mostrar sem som do que só o fallback).
+    player.muted = true;
+    player.play().catch(() => player.onerror());
+  });
+}
+
+// Fecha o overlay de vídeo imediatamente, sem disparar onEnd — usado quando
+// a criança navega para outra tela no meio de uma revelação.
+function forceCloseVideoOverlay() {
+  const overlay = $('video-overlay');
+  const player  = $('video-overlay-player');
+  overlay.classList.remove('active');
+  player.onended = null;
+  player.onerror = null;
+  player.pause();
+  player.removeAttribute('src');
+  player.load();
+}
+
 function showOverlay(emoji, rainbow) {
   const el = $('celebration-overlay');
   el.textContent = emoji;
@@ -229,6 +313,7 @@ btnStart.addEventListener('click', () => { initAudio(); beginFromName(); });
 function beginFromName() {
   G.name = nameInput.value.trim();
   localStorage.setItem('playerName', G.name);
+  hydrateProgress();
   showWelcome();
 }
 
@@ -237,6 +322,7 @@ $('btn-play').addEventListener('click', () => { initAudio(); startGame(); });
 
 function showWelcome() {
   $('welcome-msg').textContent = `${t('greeting')(G.name)[0]} 🦄❤️👋`;
+  updateCoinDisplay();
   showScreen('screen-welcome');
   setTimeout(() => speakSeq(t('greeting')(G.name), 1.06, 1.18), 400);
 }
@@ -263,6 +349,7 @@ function startGame() {
   G.current   = 0;
   G.score     = 0;
   $('q-score').textContent = '✅ 0';
+  updateCoinDisplay();
   showScreen('screen-playing');
   showQuestion();
 }
@@ -371,12 +458,54 @@ function showResults() {
 
   playWin();
   launchConfetti();
-  setTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.93, 1.18), 500);
+
+  const award = awardForRoundResult(s);
+  updateCoinDisplay();
+
+  if (!award.coinEarned) {
+    scheduleTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.93, 1.18), 500);
+    return;
+  }
+
+  // Há moeda (e talvez badge) para revelar: fala o resultado normal primeiro
+  // e só então encadeia moeda → badge → despedida, um de cada vez.
+  scheduleTimeout(() => speakSeq([title, sub], 0.93, 1.18), 500);
+  scheduleTimeout(() => revealCoin(award), 3200);
+}
+
+function revealCoin(award) {
+  updateCoinDisplay();
+  speakSeq([t('coinEarnedSpeech')], 1.0, 1.2);
+  playOverlayVideo('video/moeda/unicornio_video.mp4', {
+    fallbackEmoji: '🦄🪙',
+    onEnd: () => {
+      if (award.newBadgeSlug) {
+        scheduleTimeout(() => revealBadge(award), 400);
+      } else {
+        scheduleTimeout(() => speakSeq([t('playAgainClose')], 0.93, 1.18), 300);
+      }
+    },
+  });
+}
+
+function revealBadge(award) {
+  const meta = CATEGORY_META[award.newBadgeSlug];
+  const categoryLabel = t(meta.labelKey);
+  speakSeq([t('badgeEarnedSpeech')(categoryLabel)], 1.0, 1.2);
+  playOverlayVideo(`video/categorias/${award.newBadgeSlug}.mp4`, {
+    fallbackEmoji: meta.emoji,
+    onEnd: () => {
+      const closing = award.albumCompleted
+        ? [t('albumCompleteSpeech'), t('playAgainClose')]
+        : [t('playAgainClose')];
+      scheduleTimeout(() => speakSeq(closing, 0.93, 1.18), 300);
+    },
+  });
 }
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
-$('btn-exit').addEventListener('click', () => {
+function exitToLanguage() {
   initAudio();
   speak(t('farewell')(G.name), 0.99, 1.18);
   setTimeout(() => {
@@ -386,6 +515,41 @@ $('btn-exit').addEventListener('click', () => {
     btnStart.disabled = true;
     showScreen('screen-language');
   }, 2500);
+}
+$('btn-exit').addEventListener('click', exitToLanguage);
+
+// ===== MENU DO LIVRO (álbum) =====
+$('btn-book').addEventListener('click', () => {
+  initAudio();
+  $('menu-album').classList.toggle('disabled', !G.name);
+  $('book-menu').classList.toggle('open');
+});
+
+$('menu-back').addEventListener('click', () => {
+  $('book-menu').classList.remove('open');
+});
+
+$('menu-album').addEventListener('click', () => {
+  if (!G.name) return;
+  $('book-menu').classList.remove('open');
+  renderAlbum();
+  showScreen('screen-album');
+});
+
+$('menu-home').addEventListener('click', () => {
+  $('book-menu').classList.remove('open');
+  if (G.name) showWelcome();
+  else showScreen('screen-name');
+});
+
+$('menu-exit').addEventListener('click', () => {
+  $('book-menu').classList.remove('open');
+  exitToLanguage();
+});
+
+$('btn-album-close').addEventListener('click', () => {
+  if (G.name) showWelcome();
+  else showScreen('screen-name');
 });
 
 $('btn-repeat').addEventListener('click', () => {
@@ -408,4 +572,6 @@ $('btn-repeat').addEventListener('click', () => {
     nameInput.value   = saved;
     btnStart.disabled = false;
   }
+
+  showScreen('screen-language'); // sincroniza ícone do livro/estado inicial
 })();

@@ -25,6 +25,21 @@
   <canvas id="confetti-canvas"></canvas>
   <div id="celebration-overlay"></div>
 
+  <!-- Menu do livro: fixo, visível em qualquer tela -->
+  <button id="btn-book" aria-label="Menu" data-i18n-aria="btnBookAria">📖</button>
+  <div id="book-menu">
+    <button id="menu-back"  data-i18n="menuBack">Voltar</button>
+    <button id="menu-album" data-i18n="menuAlbum">Álbum</button>
+    <button id="menu-home"  data-i18n="menuHome">Início</button>
+    <button id="menu-exit"  data-i18n="menuExit">Sair</button>
+  </div>
+
+  <!-- Overlay de vídeo: entrega da moeda / revelação de badge -->
+  <div id="video-overlay">
+    <video id="video-overlay-player" playsinline></video>
+    <div id="video-overlay-fallback"></div>
+  </div>
+
   <!-- TELA 0: Idioma -->
   <div id="screen-language" class="screen active">
     <div class="screen-card">
@@ -55,6 +70,7 @@
       <div class="title-emoji">🌟</div>
       <h1 id="welcome-msg">Olá!</h1>
       <p class="subtitle" data-i18n="welcomeSubtitle">Pronto para aprender coisas incríveis?</p>
+      <div class="coin-balance">🪙 <span class="coin-count">0</span></div>
       <div class="preview-stars">⭐⭐⭐</div>
       <button id="btn-play" class="btn-primary" data-i18n="btnPlay">Jogar! 🎮</button>
     </div>
@@ -66,6 +82,7 @@
 
       <div class="top-bar">
         <span id="q-progress">1 / 10</span>
+        <span class="coin-balance">🪙 <span class="coin-count">0</span></span>
         <span id="q-score">✅ 0</span>
       </div>
 
@@ -108,14 +125,27 @@
       <div id="result-stars" class="result-stars"></div>
       <h1 id="result-title"></h1>
       <p id="result-subtitle" class="subtitle"></p>
+      <div class="coin-balance">🪙 <span class="coin-count">0</span></div>
       <button id="btn-replay" class="btn-primary" data-i18n="btnReplay">Jogar de novo! 🔄</button>
       <button id="btn-exit" class="btn-secondary" data-i18n="btnExit">Sair 👋</button>
+    </div>
+  </div>
+
+  <!-- TELA 5: Álbum de figurinhas -->
+  <div id="screen-album" class="screen">
+    <div class="screen-card album-card">
+      <div class="title-emoji">📖</div>
+      <h1 data-i18n="albumTitle">Meu Álbum de Figurinhas</h1>
+      <p class="subtitle" id="album-progress-text">0 / 26 selos</p>
+      <div id="album-grid" class="album-grid"></div>
+      <button id="btn-album-close" class="btn-secondary" data-i18n="btnClose">Fechar</button>
     </div>
   </div>
 
   <script src="js/questions.js"></script>
   <script src="js/questions.en.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/progress.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
