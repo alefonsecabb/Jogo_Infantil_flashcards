@@ -344,7 +344,7 @@ function showWelcome() {
   $('welcome-msg').textContent = `${t('greeting')(G.name)[0]} 🦄❤️👋`;
   updateCoinDisplay();
   showScreen('screen-welcome');
-  setTimeout(() => speakSeq(t('greeting')(G.name), 1.06, 1.18), 400);
+  setTimeout(() => speakSeq([...t('greeting')(G.name), t('albumHint')], 1.06, 1.18), 400);
 }
 
 // ===== POOL SEM REPETIÇÃO =====

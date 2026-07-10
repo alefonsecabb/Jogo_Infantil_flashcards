@@ -110,7 +110,7 @@ O jogo é bilíngue (português/inglês), escolhido na tela de bandeiras no iní
 ## Sistema de Progressão (Moedas + Álbum de Figurinhas)
 
 - **Moedinha de ouro**: qualquer rodada com 8 ou mais acertos (de 10) rende +1 moeda, entregue com o vídeo `video/moeda/unicornio_video.mp4` (overlay fullscreen, `js/game.js` → `playOverlayVideo()`). O saldo é vitalício (nunca reseta) e aparece no topo das telas de Boas-vindas, Jogo e Resultado (`.coin-balance`).
-- **Badges de categoria**: a cada múltiplo de 10 moedas (10, 20, 30...), a criança ganha 1 badge de uma categoria sorteada entre as 26, sem repetir uma já conquistada. Badges ficam guardados no Álbum de Figurinhas (`#screen-album`), acessível a qualquer momento pelo ícone de livro (📖) fixo no canto superior esquerdo — visível em todas as telas exceto a de escolha de idioma.
+- **Badges de categoria**: a cada múltiplo de 3 moedas (3, 6, 9...), a criança ganha 1 badge de uma categoria sorteada entre as 26, sem repetir uma já conquistada. Badges ficam guardados no Álbum de Figurinhas (`#screen-album`), acessível a qualquer momento pelo ícone de livro (📖) fixo no canto superior esquerdo — visível em todas as telas exceto a de escolha de idioma. O limiar fica em `COINS_PER_BADGE` (`js/progress.js`). A tela de Boas-vindas mostra e fala um lembrete da regra (`albumHint` em `js/i18n.js`).
 - **Vídeos por categoria**: `js/game.js` tenta tocar `video/categorias/<slug>.mp4` (slug = mesmo valor de `category` usado em `js/questions.js`) ao revelar um badge novo. Se o arquivo ainda não existir, cai automaticamente para uma revelação com emoji + nome da categoria — **basta adicionar o arquivo de vídeo com o nome certo na pasta para ele passar a tocar, sem alterar código**.
 - **Persistência**: `js/progress.js` guarda `{ coins, badges }` por nome de jogador na chave localStorage `playerProgress` (mesmo padrão de `playerName`/`usedQIds` já usado pelo jogo — sem seletor de perfil dedicado, o nome digitado é a chave).
 - Mapa categoria→emoji/nome fica em `CATEGORY_META` (`js/progress.js`); a lógica de sorteio/persistência fica em `awardForRoundResult()`, chamada uma vez por rodada dentro de `showResults()`.
@@ -141,13 +141,13 @@ O GitHub Pages atualiza automaticamente em 1–2 minutos.
 - [x] Sem necessidade de internet após o carregamento inicial
 - [x] Suporte bilíngue português/inglês com seletor de bandeiras e voz nativa em cada idioma
 - [x] Sistema de progressão: moedinhas de ouro por rodadas com 8+ acertos, entregues por vídeo de unicórnio
-- [x] Álbum de figurinhas com badges de categoria (sorteados a cada 10 moedas), acessível por ícone de livro fixo
+- [x] Álbum de figurinhas com badges de categoria (sorteados a cada 3 moedas), acessível por ícone de livro fixo
 - [x] Progresso (moedas/badges) salvo por nome de jogador, persistente entre sessões
 
 ## Changelog
 
 ### 2026-07-09 — v1.2.0
-- Sistema de progressão: moedinhas de ouro (rodada com 8+/10 acertos), álbum de figurinhas com badges de categoria sorteados a cada 10 moedas, vídeo de entrega da moedinha (unicórnio) com fallback gracioso para vídeos de categoria ainda não produzidos
+- Sistema de progressão: moedinhas de ouro (rodada com 8+/10 acertos), álbum de figurinhas com badges de categoria sorteados a cada 3 moedas, vídeo de entrega da moedinha (unicórnio) com fallback gracioso para vídeos de categoria ainda não produzidos
 - Menu do livro (📖) fixo em todas as telas (exceto idioma), com acesso ao álbum, início e sair
 - Progresso persistido por nome de jogador em `localStorage` (`playerProgress`)
 

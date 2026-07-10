@@ -89,6 +89,14 @@ h1 {
   letter-spacing: 8px;
 }
 
+.album-hint {
+  font-size: clamp(12px, 3vw, 15px);
+  color: var(--subtle);
+  font-weight: 700;
+  line-height: 1.35;
+  max-width: 320px;
+}
+
 /* ===== INPUT ===== */
 #name-input {
   width: 100%;
@@ -365,7 +373,7 @@ h1 {
 /* ===== MENU DO LIVRO ===== */
 #btn-book {
   position: fixed;
-  top: 12px;
+  top: calc(12px + env(safe-area-inset-top, 0px));
   left: 12px;
   z-index: 200;
   width: 46px;
@@ -385,7 +393,7 @@ h1 {
 
 #book-menu {
   position: fixed;
-  top: 64px;
+  top: calc(64px + env(safe-area-inset-top, 0px));
   left: 12px;
   z-index: 200;
   background: var(--card-bg);

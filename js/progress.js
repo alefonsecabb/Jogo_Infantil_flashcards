@@ -8,7 +8,7 @@
    tempo de execução, nunca no carregamento do script. */
 
 const PROGRESS_KEY = 'playerProgress';
-const COINS_PER_BADGE = 10;
+const COINS_PER_BADGE = 3;
 
 // slug (igual ao usado em js/questions.js) → emoji + chave i18n do nome
 const CATEGORY_META = {
