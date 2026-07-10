@@ -47,7 +47,7 @@ const UI_STRINGS = {
 
     albumTitle: 'Meu Álbum de Figurinhas',
     albumProgress: (n, total) => `${n} / ${total} selos`,
-    albumHint: 'A cada 3 moedas você ganha uma figurinha. Complete seu álbum!',
+    albumHint: 'A cada 3 moedas você ganha uma figurinha. Clique no menu e complete seuálbum!',
     btnClose: 'Fechar',
 
     btnBookAria: 'Menu',
@@ -127,7 +127,7 @@ const UI_STRINGS = {
 
     albumTitle: 'My Sticker Album',
     albumProgress: (n, total) => `${n} / ${total} stickers`,
-    albumHint: 'Every 3 coins you earn a sticker. Complete your album!',
+    albumHint: 'Get 3 coins and earn a sticker. Click in the album to check!',
     btnClose: 'Close',
 
     btnBookAria: 'Menu',
