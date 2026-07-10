@@ -16,6 +16,7 @@ const G = {
   coins: 0,             // saldo de moedas do jogador ativo (espelha localStorage)
   badges: [],            // slugs de categoria conquistados (ordem)
   pendingTimeouts: [],   // setTimeout ids da sequência de revelação de RESULTS
+  resultsToken: 0,       // invalida callbacks de fala pendentes se a tela mudar no meio
 };
 
 function currentVoice() { return G.lang === 'en' ? G.voiceEn : G.voicePt; }
@@ -53,6 +54,7 @@ function showScreen(id) {
   // o álbum enquanto o vídeo ainda tocava).
   clearPendingTimeouts();
   forceCloseVideoOverlay();
+  G.resultsToken++;
 
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
@@ -90,13 +92,22 @@ if ('speechSynthesis' in window) {
   loadVoice();
 }
 
-// Fala uma sequência de frases com pausa natural entre elas
-function speakSeq(phrases, rate = 0.99, pitch = 1.18) {
-  if (!('speechSynthesis' in window) || !phrases.length) return;
+// Fala uma sequência de frases com pausa natural entre elas. onComplete,
+// se passado, é chamado depois que a última frase termina de ser falada
+// (usado para encadear uma animação só depois que a fala realmente acabou,
+// em vez de chutar um tempo fixo que pode cortar a voz no meio).
+function speakSeq(phrases, rate = 0.99, pitch = 1.18, onComplete) {
+  if (!('speechSynthesis' in window) || !phrases.length) {
+    if (onComplete) onComplete();
+    return;
+  }
   speechSynthesis.cancel();
   let i = 0;
   function next() {
-    if (i >= phrases.length) return;
+    if (i >= phrases.length) {
+      if (onComplete) onComplete();
+      return;
+    }
     const u = new SpeechSynthesisUtterance(phrases[i++]);
     u.lang   = G.lang === 'en' ? 'en-US' : 'pt-BR';
     u.rate   = rate;
@@ -468,6 +479,7 @@ function nextQuestion() {
 // ===== RESULTADO =====
 function showResults() {
   showScreen('screen-results');
+  const token = G.resultsToken;
   const s = G.score;
   const tier = s >= 8 ? 'high' : s >= 5 ? 'mid' : 'low';
   const { stars, title, sub } = t('resultTiers')[tier](G.name, s);
@@ -488,9 +500,14 @@ function showResults() {
   }
 
   // Há moeda (e talvez badge) para revelar: fala o resultado normal primeiro
-  // e só então encadeia moeda → badge → despedida, um de cada vez.
-  scheduleTimeout(() => speakSeq([title, sub], 0.93, 1.18), 500);
-  scheduleTimeout(() => revealCoin(award), 3200);
+  // e só encadeia a moeda depois que a fala realmente terminar (nunca um
+  // tempo fixo chutado, que pode cortar a voz no meio da frase).
+  scheduleTimeout(() => {
+    speakSeq([title, sub], 0.93, 1.18, () => {
+      if (G.resultsToken !== token) return; // a tela já mudou nesse meio tempo
+      scheduleTimeout(() => revealCoin(award), 500);
+    });
+  }, 500);
 }
 
 function revealCoin(award) {
