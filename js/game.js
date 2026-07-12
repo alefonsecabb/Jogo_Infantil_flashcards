@@ -90,6 +90,16 @@ function loadVoice() {
 if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = loadVoice;
   loadVoice();
+
+  // Workaround para bug conhecido do Chrome/Edge: depois de ~15s de fala
+  // acumulada na aba, a engine de TTS passa a abafar/cortar a voz. Um
+  // pause()+resume() periódico reseta esse watchdog interno.
+  setInterval(() => {
+    if (speechSynthesis.speaking) {
+      speechSynthesis.pause();
+      speechSynthesis.resume();
+    }
+  }, 5000);
 }
 
 // Fala uma sequência de frases com pausa natural entre elas. onComplete,
@@ -401,14 +411,24 @@ function showQuestion() {
   cards.forEach((card, i) => {
     const opt = G.currentOptions[i];
     const imgEl = card.querySelector('.card-image');
+    const emojiEl = card.querySelector('.card-emoji');
     if (opt.image) {
+      // Imagem sugerida mas ainda não criada (404) cai pro emoji, em vez de
+      // deixar o ícone de imagem quebrada na tela.
+      imgEl.onerror = () => {
+        imgEl.onerror = null;
+        imgEl.hidden = true;
+        imgEl.removeAttribute('src');
+        emojiEl.textContent = opt.emoji;
+      };
       imgEl.src = opt.image;
       imgEl.hidden = false;
-      card.querySelector('.card-emoji').textContent = '';
+      emojiEl.textContent = '';
     } else {
+      imgEl.onerror = null;
       imgEl.hidden = true;
       imgEl.removeAttribute('src');
-      card.querySelector('.card-emoji').textContent = opt.emoji;
+      emojiEl.textContent = opt.emoji;
     }
     card.querySelector('.card-label').textContent = opt.label;
     card.className = 'card'; // reset all states

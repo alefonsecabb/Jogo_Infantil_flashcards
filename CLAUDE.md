@@ -28,8 +28,8 @@ Projeto_jogo_Infantil_Elisa/
 │   ├── moeda/unicornio_video.mp4   # animação de entrega da moedinha de ouro
 │   └── categorias/                 # vídeos por categoria (adicionados aos poucos, ver seção Progressão)
 └── js/
-    ├── questions.js    # banco com 500 perguntas (26 categorias), em português
-    ├── questions.en.js # traduções em inglês das 500 perguntas, indexadas por id
+    ├── questions.js    # banco com 760 perguntas (26 categorias), em português
+    ├── questions.en.js # traduções em inglês das 760 perguntas, indexadas por id
     ├── i18n.js         # dicionário pt/en da interface e da fala + helpers de tradução
     ├── progress.js      # moedas, badges, álbum de figurinhas — estado + persistência
     └── game.js         # lógica, TTS, áudio, estados, celebrações, idioma, menu do livro
@@ -52,33 +52,33 @@ LANGUAGE → NAME_INPUT → WELCOME → PLAYING → FEEDBACK → PLAYING ... →
 
 | # | Categoria | Emoji | Qtd |
 |---|-----------|-------|-----|
-| 1 | Animais domésticos | 🐾 | 19 |
-| 2 | Animais selvagens | 🦁 | 19 |
-| 3 | Animais marinhos | 🐬 | 19 |
-| 4 | Animais da fazenda | 🐄 | 19 |
-| 5 | Insetos e pequenos animais | 🐛 | 19 |
-| 6 | Pássaros | 🐦 | 19 |
-| 7 | Dinossauros | 🦕 | 19 |
-| 8 | Frutas | 🍎 | 19 |
-| 9 | Vegetais e legumes | 🥕 | 19 |
-| 10 | Natureza e plantas | 🌿 | 19 |
-| 11 | Estações do ano | 🍂 | 19 |
-| 12 | Clima e tempo | 🌤️ | 19 |
-| 13 | Cores | 🎨 | 19 |
-| 14 | Formas geométricas | 🔷 | 19 |
-| 15 | Números e quantidades | 🔢 | 19 |
-| 16 | Família | 👨‍👩‍👧 | 19 |
-| 17 | Emoções | 💛 | 19 |
-| 18 | Corpo e sentidos | 👃 | 19 |
-| 19 | Escola | 🏫 | 19 |
-| 20 | Transportes | 🚗 | 19 |
-| 21 | Profissões | 👩‍🏫 | 19 |
-| 22 | Alimentos e bebidas | 🍽️ | 19 |
-| 23 | Roupas e acessórios | 👗 | 19 |
-| 24 | Objetos da casa | 🏠 | 19 |
-| 25 | Brinquedos e diversão | 🎮 | 19 |
-| 26 | Espaço e Universo | 🚀 | 25 |
-| | **TOTAL** | | **500** |
+| 1 | Animais domésticos | 🐾 | 29 |
+| 2 | Animais selvagens | 🦁 | 29 |
+| 3 | Animais marinhos | 🐬 | 29 |
+| 4 | Animais da fazenda | 🐄 | 29 |
+| 5 | Insetos e pequenos animais | 🐛 | 29 |
+| 6 | Pássaros | 🐦 | 29 |
+| 7 | Dinossauros | 🦕 | 29 |
+| 8 | Frutas | 🍎 | 29 |
+| 9 | Vegetais e legumes | 🥕 | 29 |
+| 10 | Natureza e plantas | 🌿 | 29 |
+| 11 | Estações do ano | 🍂 | 29 |
+| 12 | Clima e tempo | 🌤️ | 29 |
+| 13 | Cores | 🎨 | 29 |
+| 14 | Formas geométricas | 🔷 | 29 |
+| 15 | Números e quantidades | 🔢 | 29 |
+| 16 | Família | 👨‍👩‍👧 | 29 |
+| 17 | Emoções | 💛 | 29 |
+| 18 | Corpo e sentidos | 👃 | 29 |
+| 19 | Escola | 🏫 | 29 |
+| 20 | Transportes | 🚗 | 29 |
+| 21 | Profissões | 👩‍🏫 | 29 |
+| 22 | Alimentos e bebidas | 🍽️ | 29 |
+| 23 | Roupas e acessórios | 👗 | 29 |
+| 24 | Objetos da casa | 🏠 | 29 |
+| 25 | Brinquedos e diversão | 🎮 | 29 |
+| 26 | Espaço e Universo | 🚀 | 35 |
+| | **TOTAL** | | **760** |
 
 ## Como Adicionar Perguntas
 
@@ -102,7 +102,7 @@ Edite `js/questions.js` e adicione objetos no array `QUESTIONS` seguindo este mo
 
 O jogo é bilíngue (português/inglês), escolhido na tela de bandeiras no início:
 
-- `js/questions.en.js` traduz as 500 perguntas, indexado por `id` (mesmo `id` de `js/questions.js`). Cobertura parcial é segura: qualquer pergunta sem tradução aparece em português automaticamente (fallback campo a campo em `localizeQuestion()`).
+- `js/questions.en.js` traduz as 760 perguntas, indexado por `id` (mesmo `id` de `js/questions.js`). Cobertura parcial é segura: qualquer pergunta sem tradução aparece em português automaticamente (fallback campo a campo em `localizeQuestion()`).
 - `js/i18n.js` tem o dicionário `UI_STRINGS.pt`/`UI_STRINGS.en` com todos os textos fixos da interface e as frases faladas, mais `applyI18n()` (aplica texto nos elementos `data-i18n*`) e `localizeQuestion()`.
 - **Ao adicionar uma pergunta nova em `questions.js`, não é obrigatório traduzir na hora** — ela some aparece em português até alguém adicionar a entrada correspondente em `questions.en.js` (mesmo `id`, campo `o` na mesma ordem das opções autorais: `[certa, errada1, errada2, errada3]`).
 - A voz (Web Speech API) troca de idioma junto — `G.voicePt`/`G.voiceEn` calculadas em `loadVoice()` (game.js), cada uma com sua cadeia de preferência de voz.
@@ -134,7 +134,7 @@ O GitHub Pages atualiza automaticamente em 1–2 minutos.
 - [x] 3 tipos de celebração: confete 🎊, arco-íris 🌈, unicórnio 🦄
 - [x] Sons procedurais via Web Audio API
 - [x] Botão 🔊 para repetir a pergunta
-- [x] 10 perguntas por sessão (sorteadas do banco de 500+)
+- [x] 10 perguntas por sessão (sorteadas do banco de 760+)
 - [x] Tela de resultado com 1–3 estrelas
 - [x] Responsivo: funciona em tablet, celular e PC
 - [x] Orientação retrato e paisagem suportadas
@@ -145,6 +145,10 @@ O GitHub Pages atualiza automaticamente em 1–2 minutos.
 - [x] Progresso (moedas/badges) salvo por nome de jogador, persistente entre sessões
 
 ## Changelog
+
+### 2026-07-11 — v1.3.0
+- +260 perguntas novas (10 por categoria, ids 501–760), em português e inglês, com dificuldade variada e diversos emojis/temas fora do banco usual (ex.: capivara, onça-pintada, buraco negro, saudade, pão de queijo) — banco total passa de 500 para 760 perguntas
+- Dezenas de sugestões de imagem customizada referenciadas nas novas perguntas (`img/options/*.webp`), ainda não criadas — o jogo cai automaticamente para o emoji até cada arquivo ser adicionado
 
 ### 2026-07-09 — v1.2.0
 - Sistema de progressão: moedinhas de ouro (rodada com 8+/10 acertos), álbum de figurinhas com badges de categoria sorteados a cada 3 moedas, vídeo de entrega da moedinha (unicórnio) com fallback gracioso para vídeos de categoria ainda não produzidos
