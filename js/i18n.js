@@ -47,7 +47,7 @@ const UI_STRINGS = {
 
     albumTitle: 'Meu Álbum de Figurinhas',
     albumProgress: (n, total) => `${n} / ${total} selos`,
-    albumHint: 'A cada 3 moedas você ganha uma figurinha. Clique no menu e complete seu álbum!',
+    albumHint: 'A cada 3 moedas você ganha uma figurinha! Complete o álbum inteiro.',
     btnClose: 'Fechar',
 
     btnBookAria: 'Menu',
@@ -57,7 +57,7 @@ const UI_STRINGS = {
     menuExit: 'Sair',
 
     coinEarnedSpeech: 'Parabéns, você ganhou uma moeda de ouro!',
-    badgeEarnedSpeech: (categoryLabel) => `Você desbloqueou o selo de ${categoryLabel}!, cheque seu álbum no menu!`,
+    coinAndBadgeEarnedSpeech: (categoryLabel) => `Você ganhou uma moeda de ouro e desbloqueou o selo de ${categoryLabel}!`,
     albumCompleteSpeech: 'Uau! Seu álbum de figurinhas está completo!',
 
     catAnimaisDomesticos: 'Animais domésticos',
@@ -127,7 +127,7 @@ const UI_STRINGS = {
 
     albumTitle: 'My Sticker Album',
     albumProgress: (n, total) => `${n} / ${total} stickers`,
-    albumHint: 'Get 3 coins and earn a sticker. Click in the album to check!',
+    albumHint: 'Every 3 coins, earn a sticker! Complete the whole album.',
     btnClose: 'Close',
 
     btnBookAria: 'Menu',
@@ -137,7 +137,7 @@ const UI_STRINGS = {
     menuExit: 'Exit',
 
     coinEarnedSpeech: 'Congratulations, you earned a gold coin!',
-    badgeEarnedSpeech: (categoryLabel) => `You unlocked the ${categoryLabel} sticker!, check your album in the menu!`,
+    coinAndBadgeEarnedSpeech: (categoryLabel) => `You earned a gold coin and unlocked the ${categoryLabel} sticker!`,
     albumCompleteSpeech: 'Wow! Your sticker album is complete!',
 
     catAnimaisDomesticos: 'Pets',

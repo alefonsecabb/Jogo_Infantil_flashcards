@@ -90,16 +90,27 @@ function loadVoice() {
 if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = loadVoice;
   loadVoice();
+}
 
-  // Workaround para bug conhecido do Chrome/Edge: depois de ~15s de fala
-  // acumulada na aba, a engine de TTS passa a abafar/cortar a voz. Um
-  // pause()+resume() periódico reseta esse watchdog interno.
-  setInterval(() => {
+// Workaround para bug conhecido do Chrome/Edge: depois de ~15s de fala
+// contínua, a engine de TTS passa a abafar/cortar a voz. Um pause()+resume()
+// periódico reseta esse watchdog interno — mas só enquanto uma sequência de
+// fala está de fato em andamento (ligado em speakSeq/desligado no final),
+// nunca em segundo plano: rodando o tempo todo ele mesmo cortava o final de
+// sequências curtas (o pause podia cair bem na última frase).
+let ttsKeepAliveTimer = null;
+function startTtsKeepAlive() {
+  if (ttsKeepAliveTimer) return;
+  ttsKeepAliveTimer = setInterval(() => {
     if (speechSynthesis.speaking) {
       speechSynthesis.pause();
       speechSynthesis.resume();
     }
-  }, 5000);
+  }, 12000);
+}
+function stopTtsKeepAlive() {
+  clearInterval(ttsKeepAliveTimer);
+  ttsKeepAliveTimer = null;
 }
 
 // Fala uma sequência de frases com pausa natural entre elas. onComplete,
@@ -112,9 +123,11 @@ function speakSeq(phrases, rate = 0.99, pitch = 1.18, onComplete) {
     return;
   }
   speechSynthesis.cancel();
+  startTtsKeepAlive();
   let i = 0;
   function next() {
     if (i >= phrases.length) {
+      stopTtsKeepAlive();
       if (onComplete) onComplete();
       return;
     }
@@ -255,6 +268,7 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
     player.load();
     player.style.display = '';
     player.classList.remove('fading');
+    player.style.animation = '';
     fallback.style.display = 'none';
     fallback.textContent = '';
     fallback.style.animation = '';
@@ -283,8 +297,11 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji } = {}) {
   player.onended = fadeAndFinish;
 
   player.style.display = '';
+  player.style.animation = 'video-pop-in 0.4s ease';
   fallback.style.display = 'none';
-  player.src = src;
+  // Se já foi pré-carregado com o mesmo src (ver showResults), evita
+  // reatribuir e potencialmente disparar um novo fetch/buffer do zero.
+  if (player.getAttribute('src') !== src) player.src = src;
   player.muted = false;
   player.play().catch(() => {
     // Autoplay com som bloqueado pelo navegador — tenta mudo em vez de
@@ -515,9 +532,16 @@ function showResults() {
   updateCoinDisplay();
 
   if (!award.coinEarned) {
-    scheduleTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.93, 1.18), 500);
+    scheduleTimeout(() => speakSeq([title, sub, t('playAgainClose')], 0.93, 1.18), 350);
     return;
   }
+
+  // Pré-carrega o vídeo da moeda em paralelo com a fala do resultado, que já
+  // vai levar alguns segundos — assim, quando revealCoin() chamar
+  // playOverlayVideo(), o vídeo já está bufferizado e toca na hora, em vez de
+  // só começar a buscar/decodificar os bytes no momento de exibir.
+  $('video-overlay-player').src = 'video/moeda/unicornio_video.mp4';
+  $('video-overlay-player').load();
 
   // Há moeda (e talvez badge) para revelar: fala o resultado normal primeiro
   // e só encadeia a moeda depois que a fala realmente terminar (nunca um
@@ -525,14 +549,23 @@ function showResults() {
   scheduleTimeout(() => {
     speakSeq([title, sub], 0.93, 1.18, () => {
       if (G.resultsToken !== token) return; // a tela já mudou nesse meio tempo
-      scheduleTimeout(() => revealCoin(award), 500);
+      scheduleTimeout(() => revealCoin(award), 300);
     });
-  }, 500);
+  }, 350);
 }
 
 function revealCoin(award) {
   updateCoinDisplay();
-  speakSeq([t('coinEarnedSpeech')], 1.0, 1.2);
+  if (award.newBadgeSlug) {
+    // Rodada rende moeda E selo juntos: um único aviso falado cobre os dois,
+    // em vez de falar de novo (concorrendo com o vídeo do selo, que ainda
+    // não existe e força duas tentativas de play() — foi isso que cortava
+    // a fala "Você desbloqueou o selo de X" no meio).
+    const categoryLabel = t(CATEGORY_META[award.newBadgeSlug].labelKey);
+    speakSeq([t('coinAndBadgeEarnedSpeech')(categoryLabel)], 1.0, 1.2);
+  } else {
+    speakSeq([t('coinEarnedSpeech')], 1.0, 1.2);
+  }
   playOverlayVideo('video/moeda/unicornio_video.mp4', {
     fallbackEmoji: '🦄🪙',
     onEnd: () => {
@@ -546,9 +579,9 @@ function revealCoin(award) {
 }
 
 function revealBadge(award) {
+  // O selo já foi anunciado junto com a moeda em revealCoin() — aqui só
+  // mostra o vídeo/emoji do selo, sem falar de novo.
   const meta = CATEGORY_META[award.newBadgeSlug];
-  const categoryLabel = t(meta.labelKey);
-  speakSeq([t('badgeEarnedSpeech')(categoryLabel)], 1.0, 1.2);
   playOverlayVideo(`video/categorias/${award.newBadgeSlug}.mp4`, {
     fallbackEmoji: meta.emoji,
     onEnd: () => {
