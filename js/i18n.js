@@ -38,16 +38,16 @@ const UI_STRINGS = {
     ],
     revealCorrect: (label) => `A resposta certa é: ${label}.`,
     resultTiers: {
-      high: (name, s) => ({ stars: '⭐⭐⭐', title: `Você é incrível ${name}!`, sub: `Acertou ${s} de 10 perguntas! Fantástico!` }),
-      mid:  (name, s) => ({ stars: '⭐⭐',   title: `Muito bem, ${name}! 😊`,     sub: `Acertou ${s} de 10 perguntas! Continue praticando!` }),
-      low:  (name, s) => ({ stars: '⭐',     title: `Boa tentativa, ${name}! 💪`, sub: `Acertou ${s} de 10 perguntas. Vamos praticar mais!` }),
+      high: (name, s) => ({ stars: '⭐⭐⭐', title: `Você é incrível ${name}!`, sub: `Acertou ${s} de 10 perguntas!` }),
+      mid:  (name, s) => ({ stars: '⭐⭐',   title: `Muito bem, ${name}! 😊`,     sub: `Acertou ${s} de 10 perguntas!` }),
+      low:  (name, s) => ({ stars: '⭐',     title: `Boa tentativa, ${name}! 💪`, sub: `Acertou ${s} de 10 perguntas!` }),
     },
     playAgainClose: 'Vamos jogar de novo?',
-    farewell: (name) => `Até logo, ${name}!`,
+    farewell: (name) => `Até logo ${name}!`,
 
     albumTitle: 'Meu Álbum de Figurinhas',
     albumProgress: (n, total) => `${n} / ${total} selos`,
-    albumHint: 'A cada 3 moedas você ganha uma figurinha! Complete o álbum inteiro.',
+    albumHint: 'A cada 3 moedas você ganha uma figurinha. Clique no menu e complete seu álbum!',
     btnClose: 'Fechar',
 
     btnBookAria: 'Menu',
@@ -57,7 +57,7 @@ const UI_STRINGS = {
     menuExit: 'Sair',
 
     coinEarnedSpeech: 'Parabéns, você ganhou uma moeda de ouro!',
-    coinAndBadgeEarnedSpeech: (categoryLabel) => `Você ganhou uma moeda de ouro e desbloqueou o selo de ${categoryLabel}!`,
+    badgeEarnedSpeech: (categoryLabel) => `Você desbloqueou o selo de ${categoryLabel}!, cheque seu álbum no menu!`,
     albumCompleteSpeech: 'Uau! Seu álbum de figurinhas está completo!',
 
     catAnimaisDomesticos: 'Animais domésticos',
@@ -118,16 +118,16 @@ const UI_STRINGS = {
     ],
     revealCorrect: (label) => `The correct answer is: ${label}.`,
     resultTiers: {
-      high: (name, s) => ({ stars: '⭐⭐⭐', title: `You're amazing, ${name}!`, sub: `You got ${s} out of 10! Fantastic!` }),
-      mid:  (name, s) => ({ stars: '⭐⭐',   title: `Great job, ${name}! 😊`,   sub: `You got ${s} out of 10! Keep practicing!` }),
-      low:  (name, s) => ({ stars: '⭐',     title: `Good try, ${name}! 💪`,    sub: `You got ${s} out of 10. Let's practice more!` }),
+      high: (name, s) => ({ stars: '⭐⭐⭐', title: `You're amazing, ${name}!`, sub: `You got ${s} out of 10!` }),
+      mid:  (name, s) => ({ stars: '⭐⭐',   title: `Great job, ${name}! 😊`,   sub: `You got ${s} out of 10!` }),
+      low:  (name, s) => ({ stars: '⭐',     title: `Good try, ${name}! 💪`,    sub: `You got ${s} out of 10!` }),
     },
     playAgainClose: 'Want to play again?',
     farewell: (name) => `See you soon, ${name}!`,
 
     albumTitle: 'My Sticker Album',
     albumProgress: (n, total) => `${n} / ${total} stickers`,
-    albumHint: 'Every 3 coins, earn a sticker! Complete the whole album.',
+    albumHint: 'Get 3 coins and earn a sticker. Click in the album to check!',
     btnClose: 'Close',
 
     btnBookAria: 'Menu',
@@ -137,7 +137,7 @@ const UI_STRINGS = {
     menuExit: 'Exit',
 
     coinEarnedSpeech: 'Congratulations, you earned a gold coin!',
-    coinAndBadgeEarnedSpeech: (categoryLabel) => `You earned a gold coin and unlocked the ${categoryLabel} sticker!`,
+    badgeEarnedSpeech: (categoryLabel) => `You unlocked the ${categoryLabel} sticker!, check your album in the menu!`,
     albumCompleteSpeech: 'Wow! Your sticker album is complete!',
 
     catAnimaisDomesticos: 'Pets',
