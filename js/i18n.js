@@ -58,6 +58,7 @@ const UI_STRINGS = {
 
     coinEarnedSpeech: 'Parabéns, você ganhou uma moeda de ouro!',
     badgeEarnedSpeech: (categoryLabel) => `Você desbloqueou o selo de ${categoryLabel}!, cheque seu álbum no menu!`,
+    coinAndBadgeEarnedSpeech: (categoryLabel) => `Parabéns, você ganhou uma moeda de ouro e desbloqueou o selo de ${categoryLabel}!, cheque seu álbum no menu!`,
     albumCompleteSpeech: 'Uau! Seu álbum de figurinhas está completo!',
 
     catAnimaisDomesticos: 'Animais domésticos',
@@ -138,6 +139,7 @@ const UI_STRINGS = {
 
     coinEarnedSpeech: 'Congratulations, you earned a gold coin!',
     badgeEarnedSpeech: (categoryLabel) => `You unlocked the ${categoryLabel} sticker!, check your album in the menu!`,
+    coinAndBadgeEarnedSpeech: (categoryLabel) => `Congratulations, you earned a gold coin and unlocked the ${categoryLabel} sticker!, check your album in the menu!`,
     albumCompleteSpeech: 'Wow! Your sticker album is complete!',
 
     catAnimaisDomesticos: 'Pets',
