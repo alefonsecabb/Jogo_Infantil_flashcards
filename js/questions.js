@@ -702,7 +702,7 @@ const QUESTIONS = (function () {
     q(310,'dinossauros','Qual dinossauro tinha crista colorida na cabeça?',
       ['🦕','Parasaurolofus'],['🦖','T-Rex', 'img/options/tiranossauro_azul.webp'],['🐊','Jacaré', 'img/options/jacare.webp'],['🦣','Mamute']),
     q(311,'dinossauros','Os dinossauros eram répteis como quais animais de hoje?',
-      ['🦎','Lagartos'],['🐟','Peixes'],['🐦','Pássaros'],['🐘','Elefantes']),
+      ['🦎','Lagartos','img/options/camaleao.webp'],['🐟','Peixes'],['🐦','Pássaros', 'img/options/pardal.webp'],['🐘','Elefantes']),
     q(312,'dinossauros','Como são chamados os ossos de dinossauro que encontramos hoje?',
       ['🦴','Fósseis', 'img/options/fossil.webp'],['💎','Cristais'],['🪨','Pedras comuns'],['🌱','Sementes']),
     q(313,'dinossauros','Qual dinossauro pequeno e esperto caçava com garras afiadas?',
