@@ -379,7 +379,7 @@ function beginFromName() {
 $('btn-play').addEventListener('click', () => { initAudio(); startGame(); });
 
 function showWelcome() {
-  $('welcome-msg').textContent = `${t('greeting')(G.name)[0]} 🦄❤️👋`;
+  $('welcome-msg').textContent = `${t('greeting')(G.name)[0]} 🦄❤️🪙👋`;
   updateCoinDisplay();
   showScreen('screen-welcome');
   setTimeout(() => speakSeq([...t('greeting')(G.name), t('albumHint')], 1.06, 1.18), 400);

@@ -113,7 +113,7 @@ const QUESTIONS_EN = {
   87: { q: 'Which vegetable is little green balls inside a pod?', o: ['Pea','Green grape','Lettuce','Broccoli'] },
   88: { q: 'Which vegetable has green leaves and goes in salad?', o: ['Lettuce','Parsley','Broccoli','Sprout'] },
   89: { q: 'Which vegetable is yellow and has silky "hair"?', o: ['Corn','Banana','Lemon','Onion'] },
-  90: { q: 'Which vegetable can we pick in green, yellow, or red?', o: ['Red bell pepper','Tomato','Strawberry','Apple'] },
+  90: { q: 'Which vegetable can we pick in green, yellow, or red?', o: ['Bell pepper','Tomato','Strawberry','Apple'] },
 
   // 10. NATURE AND PLANTS
   91: { q: 'Which part of the plant is underground?', o: ['Root','Leaf','Flower','Trunk'] },
@@ -759,7 +759,7 @@ const QUESTIONS_EN = {
   623: { q: 'What color is a ripe strawberry?', o: ['Red','Yellow','Green','Purple'] },
   624: { q: 'What is the most common color of cotton candy?', o: ['Pink','Purple','Red','White'] },
   625: { q: 'Which shiny, metallic color looks like gold?', o: ['Golden','Silver','Yellow','Brown'] },
-  626: { q: 'Which shiny, metallic color looks like silver?', o: ['Silver','Golden','White','Black'] },
+  626: { q: 'Which shiny, metallic color looks shiny gray?', o: ['Silver','Golden','White','Black'] },
   627: { q: 'Which color looks like a tropical sea, a mix of blue and green?', o: ['Turquoise','Blue','Green','Purple'] },
   628: { q: 'What do we call the group of colors that remind us of fire and sun, like red, orange and yellow?', o: ['Warm colors','Cool colors','Neutral colors','Pastel colors'] },
   629: { q: 'What do we call the group of colors that remind us of ice and the sea, like blue, green and purple?', o: ['Cool colors','Warm colors','Bright colors','Dark colors'] },

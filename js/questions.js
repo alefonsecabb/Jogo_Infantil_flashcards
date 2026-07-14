@@ -1380,7 +1380,7 @@ const QUESTIONS = (function () {
     q(618,'clima','Como se chama o vento muito forte que pode derrubar árvores e até telhados?',
       ['🌪️','Vendaval', 'img/options/vendaval.webp'],['🍃','Brisa'],['🌧️','Chuva fraca'],['☀️','Sol']),
     q(619,'clima','Como se chama a água que se forma no chão depois de muita chuva?',
-      ['💧','Poça d\'água', 'img/options/poca_dagua.webp'],['🏔️','Geleira'],['🧊','Gelo'],['🌈','Arco-íris']),
+      ['💧','Poça d\'água', 'img/options/poca_está dagua.webp'],['🏔️','Geleira'],['🧊','Gelo'],['🌈','Arco-íris']),
     q(620,'clima','Como se chama o fenômeno de luzes coloridas que dançam no céu de noite, perto do Polo Norte?',
       ['🌌','Aurora boreal', 'img/options/aurora_boreal.webp'],['🌈','Arco-íris'],['⚡','Raio'],['🌫️','Neblina']),
 
