@@ -113,3 +113,57 @@ function renderAlbum() {
   });
   $('album-progress-text').textContent = t('albumProgress')(G.badges.length, ALL_CATEGORY_SLUGS.length);
 }
+
+// ===== TELA DO MAPA =====
+// Trilha de 26 estágios (uma por categoria), na ordem real em que os selos
+// foram conquistados — não há como saber de antemão qual categoria virá a
+// seguir, já que awardForRoundResult() sorteia aleatoriamente entre as que
+// faltam.
+function renderMap() {
+  const track = $('map-track');
+  track.innerHTML = '';
+  const total = ALL_CATEGORY_SLUGS.length;
+  const unlockedCount = G.badges.length;
+  const remainder = G.coins % COINS_PER_BADGE;
+  const coinsToNext = remainder === 0 ? COINS_PER_BADGE : COINS_PER_BADGE - remainder;
+
+  for (let i = 0; i < total; i++) {
+    const stage = document.createElement('div');
+    stage.className = 'map-stage ' + (i % 2 === 0 ? 'stage-up' : 'stage-down');
+
+    const num = document.createElement('span');
+    num.className = 'map-stage-num';
+    num.textContent = i + 1;
+    stage.appendChild(num);
+
+    if (i < unlockedCount) {
+      const meta = CATEGORY_META[G.badges[i]];
+      stage.classList.add('unlocked');
+      stage.innerHTML += `<span class="map-stage-emoji">${meta.emoji}</span>
+        <span class="map-stage-label">${t(meta.labelKey)}</span>
+        <span class="map-stage-check">✅</span>`;
+    } else if (i === unlockedCount && unlockedCount < total) {
+      stage.classList.add('current');
+      stage.id = 'map-stage-current';
+      stage.innerHTML += `<span class="map-stage-emoji">🪙</span>
+        <span class="map-stage-label">${coinsToNext}/${COINS_PER_BADGE}</span>`;
+    } else {
+      stage.classList.add('locked');
+      stage.innerHTML += `<span class="map-stage-emoji">🔒</span><span class="map-stage-label">?</span>`;
+    }
+    track.appendChild(stage);
+
+    if (i < total - 1) {
+      const connector = document.createElement('div');
+      connector.className = 'map-connector';
+      track.appendChild(connector);
+    }
+  }
+
+  $('map-progress-text').textContent = t('mapProgress')(unlockedCount, total);
+
+  requestAnimationFrame(() => {
+    const target = $('map-stage-current') || track.lastElementChild;
+    if (target && target.scrollIntoView) target.scrollIntoView({ inline: 'center', block: 'nearest' });
+  });
+}

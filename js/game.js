@@ -17,6 +17,7 @@ const G = {
   badges: [],            // slugs de categoria conquistados (ordem)
   pendingTimeouts: [],   // setTimeout ids da sequência de revelação de RESULTS
   resultsToken: 0,       // invalida callbacks de fala pendentes se a tela mudar no meio
+  questionToken: 0,      // invalida callbacks de destaque de opção de uma pergunta que já não é a atual
 };
 
 function currentVoice() { return G.lang === 'en' ? G.voiceEn : G.voicePt; }
@@ -117,7 +118,7 @@ function stopTtsKeepAlive() {
 // se passado, é chamado depois que a última frase termina de ser falada
 // (usado para encadear uma animação só depois que a fala realmente acabou,
 // em vez de chutar um tempo fixo que pode cortar a voz no meio).
-function speakSeq(phrases, rate = 0.99, pitch = 1.18, onComplete) {
+function speakSeq(phrases, rate = 0.99, pitch = 1.18, onComplete, onPhrase) {
   if (!('speechSynthesis' in window) || !phrases.length) {
     if (onComplete) onComplete();
     return;
@@ -131,13 +132,15 @@ function speakSeq(phrases, rate = 0.99, pitch = 1.18, onComplete) {
       if (onComplete) onComplete();
       return;
     }
-    const u = new SpeechSynthesisUtterance(phrases[i++]);
+    const idx = i++;
+    const u = new SpeechSynthesisUtterance(phrases[idx]);
     u.lang   = G.lang === 'en' ? 'en-US' : 'pt-BR';
     u.rate   = rate;
     u.pitch  = pitch;
     u.volume = 1;
     const v = currentVoice();
     if (v) u.voice = v;
+    if (onPhrase) u.onstart = () => onPhrase(idx);
     u.onend = () => setTimeout(next, 120);
     speechSynthesis.speak(u);
   }
@@ -408,8 +411,47 @@ function startGame() {
   G.score     = 0;
   $('q-score').textContent = '✅ 0';
   updateCoinDisplay();
+  renderRoundProgress();
   showScreen('screen-playing');
   showQuestion();
+}
+
+// Trilha de bolinhas no rodapé mostrando o avanço na rodada de 10 perguntas.
+function renderRoundProgress() {
+  const el = $('round-progress');
+  el.innerHTML = '';
+  for (let i = 0; i < G.questions.length; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'round-progress-dot';
+    el.appendChild(dot);
+  }
+}
+
+function updateRoundProgress() {
+  document.querySelectorAll('#round-progress .round-progress-dot').forEach((dot, i) => {
+    dot.classList.toggle('done', i < G.current);
+    dot.classList.toggle('current', i === G.current);
+  });
+}
+
+// Fala cada opção de resposta em sequência, destacando o card correspondente
+// enquanto ela é falada — ajuda a criança a relacionar o áudio ao flashcard.
+function speakOptions(token) {
+  const cards  = document.querySelectorAll('.card');
+  const labels = G.currentOptions.map(o => o.label);
+  let highlighted = null;
+  const highlight = (i) => {
+    if (G.questionToken !== token) return;
+    if (highlighted) highlighted.classList.remove('speaking');
+    highlighted = cards[i] || null;
+    if (highlighted) highlighted.classList.add('speaking');
+  };
+  const clear = () => {
+    if (G.questionToken !== token) return;
+    if (highlighted) highlighted.classList.remove('speaking');
+    highlighted = null;
+  };
+  speakSeq(labels, 1.0, 1.18, clear, highlight);
 }
 
 function showQuestion() {
@@ -418,6 +460,7 @@ function showQuestion() {
   G.locked   = false;
 
   $('q-progress').textContent  = `${G.current + 1} / 10`;
+  updateRoundProgress();
   $('question-text').textContent = q.question;
   $('feedback-text').textContent = '';
 
@@ -451,7 +494,13 @@ function showQuestion() {
     card.className = 'card'; // reset all states
   });
 
-  setTimeout(() => speakSeq([q.question], 0.98, 1.18), 350);
+  const token = ++G.questionToken;
+  setTimeout(() => {
+    speakSeq([q.question], 0.98, 1.18, () => {
+      if (G.questionToken !== token) return;
+      setTimeout(() => speakOptions(token), 300);
+    });
+  }, 350);
 }
 
 // Single delegated listener on the grid
@@ -465,6 +514,7 @@ $('cards-grid').addEventListener('click', e => {
 
 function handleAnswer(card, isCorrect, label) {
   initAudio();
+  document.querySelectorAll('.card.speaking').forEach(c => c.classList.remove('speaking'));
 
   if (isCorrect) {
     G.locked = true;
@@ -595,6 +645,11 @@ function revealBadge(award) {
 
 $('btn-replay').addEventListener('click', () => { initAudio(); startGame(); });
 
+$('btn-map').addEventListener('click', () => {
+  renderMap();
+  showScreen('screen-map');
+});
+
 function exitToLanguage() {
   initAudio();
   speak(t('farewell')(G.name), 0.99, 1.18);
@@ -612,6 +667,7 @@ $('btn-exit').addEventListener('click', exitToLanguage);
 $('btn-book').addEventListener('click', () => {
   initAudio();
   $('menu-album').classList.toggle('disabled', !G.name);
+  $('menu-map').classList.toggle('disabled', !G.name);
   $('book-menu').classList.toggle('open');
 });
 
@@ -624,6 +680,13 @@ $('menu-album').addEventListener('click', () => {
   $('book-menu').classList.remove('open');
   renderAlbum();
   showScreen('screen-album');
+});
+
+$('menu-map').addEventListener('click', () => {
+  if (!G.name) return;
+  $('book-menu').classList.remove('open');
+  renderMap();
+  showScreen('screen-map');
 });
 
 $('menu-home').addEventListener('click', () => {
@@ -642,9 +705,19 @@ $('btn-album-close').addEventListener('click', () => {
   else showScreen('screen-name');
 });
 
+$('btn-map-close').addEventListener('click', () => {
+  if (G.name) showWelcome();
+  else showScreen('screen-name');
+});
+
 $('btn-repeat').addEventListener('click', () => {
   const text = $('question-text').textContent;
-  if (text) speakSeq([text], 1.05, 1.18);
+  if (!text) return;
+  const token = ++G.questionToken;
+  speakSeq([text], 1.05, 1.18, () => {
+    if (G.questionToken !== token) return;
+    setTimeout(() => speakOptions(token), 300);
+  });
 });
 
 // ===== INICIALIZAR =====

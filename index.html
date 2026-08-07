@@ -30,6 +30,7 @@
   <div id="book-menu">
     <button id="menu-back"  data-i18n="menuBack">Voltar</button>
     <button id="menu-album" data-i18n="menuAlbum">Álbum</button>
+    <button id="menu-map"   data-i18n="menuMap">Mapa</button>
     <button id="menu-home"  data-i18n="menuHome">Início</button>
     <button id="menu-exit"  data-i18n="menuExit">Sair</button>
   </div>
@@ -118,6 +119,8 @@
 
       <div id="feedback-text" class="feedback-text"></div>
 
+      <div id="round-progress" class="round-progress" aria-hidden="true"></div>
+
     </div>
   </div>
 
@@ -128,6 +131,7 @@
       <h1 id="result-title"></h1>
       <p id="result-subtitle" class="subtitle"></p>
       <div class="coin-balance">🪙 <span class="coin-count">0</span></div>
+      <button id="btn-map" class="btn-secondary" data-i18n="btnMap">Ver Mapa 🗺️</button>
       <button id="btn-replay" class="btn-primary" data-i18n="btnReplay">Jogar de novo! 🔄</button>
       <button id="btn-exit" class="btn-secondary" data-i18n="btnExit">Sair 👋</button>
     </div>
@@ -141,6 +145,17 @@
       <p class="subtitle" id="album-progress-text">0 / 26 selos</p>
       <div id="album-grid" class="album-grid"></div>
       <button id="btn-album-close" class="btn-secondary" data-i18n="btnClose">Fechar</button>
+    </div>
+  </div>
+
+  <!-- TELA 6: Mapa de evolução -->
+  <div id="screen-map" class="screen">
+    <div class="screen-card map-card">
+      <div class="title-emoji">🗺️</div>
+      <h1 data-i18n="mapTitle">Mapa da Aventura</h1>
+      <p class="subtitle" id="map-progress-text">0 / 26 fases</p>
+      <div id="map-track" class="map-track"></div>
+      <button id="btn-map-close" class="btn-secondary" data-i18n="btnClose">Fechar</button>
     </div>
   </div>
 

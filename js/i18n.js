@@ -50,9 +50,14 @@ const UI_STRINGS = {
     albumHint: 'A cada 3 moedas você ganha uma figurinha. Clique no menu e complete seu álbum!',
     btnClose: 'Fechar',
 
+    mapTitle: 'Mapa da Aventura',
+    mapProgress: (n, total) => `${n} / ${total} fases`,
+    btnMap: 'Ver Mapa 🗺️',
+
     btnBookAria: 'Menu',
     menuBack: 'Voltar',
     menuAlbum: 'Álbum',
+    menuMap: 'Mapa',
     menuHome: 'Início',
     menuExit: 'Sair',
 
@@ -131,9 +136,14 @@ const UI_STRINGS = {
     albumHint: 'Get 3 coins and earn a sticker. Click in the album to check!',
     btnClose: 'Close',
 
+    mapTitle: 'Adventure Map',
+    mapProgress: (n, total) => `${n} / ${total} stages`,
+    btnMap: 'View Map 🗺️',
+
     btnBookAria: 'Menu',
     menuBack: 'Back',
     menuAlbum: 'Album',
+    menuMap: 'Map',
     menuHome: 'Home',
     menuExit: 'Exit',
 
