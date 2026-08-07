@@ -517,8 +517,30 @@ $('cards-grid').addEventListener('click', e => {
   handleAnswer(card, opt.correct, opt.label);
 });
 
+// Fala uma frase e só então avança para a próxima pergunta — mas nunca trava
+// o jogo esperando: se a fala não terminar (engine de TTS falha silenciosa,
+// bug de navegador ao cancelar+iniciar fala rapidamente), um tempo máximo de
+// segurança garante que o jogo sempre segue em frente.
+function speakThenAdvance(phrases, rate, pitch, maxWaitMs) {
+  let done = false;
+  const advance = () => {
+    if (done) return;
+    done = true;
+    nextQuestion();
+  };
+  speakSeq(phrases, rate, pitch, () => setTimeout(advance, 400));
+  setTimeout(advance, maxWaitMs);
+}
+
 function handleAnswer(card, isCorrect, label) {
   initAudio();
+  // Invalida qualquer callback pendente da narração da pergunta/opções desta
+  // rodada (ver speakOptions()/showQuestion()) — sem isso, se a criança
+  // responder bem rápido (antes da narração das opções começar), o cancel()
+  // da fala de celebração abaixo pode disparar o onend da fala da pergunta
+  // já cancelada, que reinicia a narração das opções no meio da celebração
+  // e trava o avanço para a próxima pergunta.
+  G.questionToken++;
   document.querySelectorAll('.card.speaking').forEach(c => c.classList.remove('speaking'));
 
   if (isCorrect) {
@@ -530,9 +552,7 @@ function handleAnswer(card, isCorrect, label) {
 
     celebrate();
     setTimeout(() => {
-      speakSeq([pick(t('celebrations')(label))], 1.02, 1.18, () => {
-        setTimeout(nextQuestion, 400);
-      });
+      speakThenAdvance([pick(t('celebrations')(label))], 1.02, 1.18, 5000);
     }, 200);
 
   } else {
@@ -558,9 +578,7 @@ function handleAnswer(card, isCorrect, label) {
           c.classList.add('disabled');
         }
       });
-      speakSeq([t('revealCorrect')(correctLabel)], 1.05, 1.18, () => {
-        setTimeout(nextQuestion, 400);
-      });
+      speakThenAdvance([t('revealCorrect')(correctLabel)], 1.05, 1.18, 5000);
     }
   }
 }
