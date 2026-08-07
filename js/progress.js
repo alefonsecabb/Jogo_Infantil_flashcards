@@ -10,34 +10,17 @@
 const PROGRESS_KEY = 'playerProgress';
 const COINS_PER_BADGE = 3;
 
-// slug (igual ao usado em js/questions.js) → emoji + chave i18n do nome
+// slug → emoji + chave i18n do nome + arquivo de vídeo em video/badges/
+// (nome do arquivo tem que bater exatamente com o disco, espaços/acentos
+// incluídos — é escapado com encodeURI() no momento de tocar o vídeo).
 const CATEGORY_META = {
-  animais_domesticos: { emoji: '🐾', labelKey: 'catAnimaisDomesticos' },
-  animais_selvagens:  { emoji: '🦁', labelKey: 'catAnimaisSelvagens' },
-  animais_marinhos:   { emoji: '🐬', labelKey: 'catAnimaisMarinhos' },
-  animais_fazenda:    { emoji: '🐄', labelKey: 'catAnimaisFazenda' },
-  insetos:            { emoji: '🐛', labelKey: 'catInsetos' },
-  passaros:           { emoji: '🐦', labelKey: 'catPassaros' },
-  dinossauros:        { emoji: '🦕', labelKey: 'catDinossauros' },
-  frutas:             { emoji: '🍎', labelKey: 'catFrutas' },
-  vegetais:           { emoji: '🥕', labelKey: 'catVegetais' },
-  natureza:           { emoji: '🌿', labelKey: 'catNatureza' },
-  estacoes:           { emoji: '🍂', labelKey: 'catEstacoes' },
-  clima:              { emoji: '🌤️', labelKey: 'catClima' },
-  cores:              { emoji: '🎨', labelKey: 'catCores' },
-  formas:             { emoji: '🔷', labelKey: 'catFormas' },
-  numeros:            { emoji: '🔢', labelKey: 'catNumeros' },
-  familia:            { emoji: '👨‍👩‍👧', labelKey: 'catFamilia' },
-  emocoes:            { emoji: '💛', labelKey: 'catEmocoes' },
-  corpo:              { emoji: '👃', labelKey: 'catCorpo' },
-  escola:             { emoji: '🏫', labelKey: 'catEscola' },
-  transportes:        { emoji: '🚗', labelKey: 'catTransportes' },
-  profissoes:         { emoji: '👩‍🏫', labelKey: 'catProfissoes' },
-  alimentos:          { emoji: '🍽️', labelKey: 'catAlimentos' },
-  roupas:             { emoji: '👗', labelKey: 'catRoupas' },
-  objetos_casa:       { emoji: '🏠', labelKey: 'catObjetosCasa' },
-  brinquedos:         { emoji: '🎮', labelKey: 'catBrinquedos' },
-  espaco:             { emoji: '🚀', labelKey: 'catEspaco' },
+  cuidador_pets:          { emoji: '🐶', labelKey: 'catCuidadorPets',          video: 'cuidador de pets.mp4' },
+  explorador_selva:       { emoji: '🦁', labelKey: 'catExploradorSelva',       video: 'explorador da selva.mp4' },
+  explorador_oceanos:     { emoji: '🐬', labelKey: 'catExploradorOceanos',     video: 'explorador dos oceanos.mp4' },
+  observador_insetos:     { emoji: '🐛', labelKey: 'catObservadorInsetos',     video: 'observador de insetos.mp4' },
+  observador_passaros:    { emoji: '🐦', labelKey: 'catObservadorPassaros',    video: 'observador de pássaros.mp4' },
+  observador_dinossauros: { emoji: '🦕', labelKey: 'catObservadorDinossauros', video: 'oservador de dinossauros.mp4' },
+  alimentacao_saudavel:   { emoji: '🥗', labelKey: 'catAlimentacaoSaudavel',   video: 'alimentação saudável.mp4' },
 };
 const ALL_CATEGORY_SLUGS = Object.keys(CATEGORY_META);
 
@@ -59,10 +42,16 @@ function saveProgressFor(name, progress) {
 }
 
 // Popula G.coins/G.badges a partir do localStorage para o jogador atual.
+// Selos de um conjunto de categorias anterior (slugs que não existem mais em
+// CATEGORY_META) são descartados silenciosamente — as moedas continuam
+// valendo normalmente.
 function hydrateProgress() {
   const p = loadProgressFor(G.name);
   G.coins  = p.coins;
-  G.badges = p.badges;
+  G.badges = p.badges.filter(slug => ALL_CATEGORY_SLUGS.includes(slug));
+  if (G.badges.length !== p.badges.length) {
+    saveProgressFor(G.name, { coins: G.coins, badges: G.badges });
+  }
 }
 
 // Núcleo do "award": chamado uma vez no início de showResults(). Decide se a

@@ -26,7 +26,7 @@ Projeto_jogo_Infantil_Elisa/
 ├── img/options/        # imagens customizadas das opções de resposta
 ├── video/
 │   ├── moeda/unicornio_video.mp4   # animação de entrega da moedinha de ouro
-│   └── categorias/                 # vídeos por categoria (adicionados aos poucos, ver seção Progressão)
+│   └── badges/                     # 1 vídeo por selo (7 fixos, ver seção Progressão)
 └── js/
     ├── questions.js    # banco com 760 perguntas (26 categorias), em português
     ├── questions.en.js # traduções em inglês das 760 perguntas, indexadas por id
@@ -110,10 +110,10 @@ O jogo é bilíngue (português/inglês), escolhido na tela de bandeiras no iní
 ## Sistema de Progressão (Moedas + Álbum de Figurinhas)
 
 - **Moedinha de ouro**: qualquer rodada com 8 ou mais acertos (de 10) rende +1 moeda, entregue com o vídeo `video/moeda/unicornio_video.mp4` (overlay fullscreen, `js/game.js` → `playOverlayVideo()`). O saldo é vitalício (nunca reseta) e aparece no topo das telas de Boas-vindas, Jogo e Resultado (`.coin-balance`).
-- **Badges de categoria**: a cada múltiplo de 3 moedas (3, 6, 9...), a criança ganha 1 badge de uma categoria sorteada entre as 26, sem repetir uma já conquistada. Badges ficam guardados no Álbum de Figurinhas (`#screen-album`), acessível a qualquer momento pelo ícone de livro (📖) fixo no canto superior esquerdo — visível em todas as telas exceto a de escolha de idioma. O limiar fica em `COINS_PER_BADGE` (`js/progress.js`). A tela de Boas-vindas mostra e fala um lembrete da regra (`albumHint` em `js/i18n.js`).
-- **Vídeos por categoria**: `js/game.js` tenta tocar `video/categorias/<slug>.mp4` (slug = mesmo valor de `category` usado em `js/questions.js`) ao revelar um badge novo. Se o arquivo ainda não existir, cai automaticamente para uma revelação com emoji + nome da categoria — **basta adicionar o arquivo de vídeo com o nome certo na pasta para ele passar a tocar, sem alterar código**.
-- **Persistência**: `js/progress.js` guarda `{ coins, badges }` por nome de jogador na chave localStorage `playerProgress` (mesmo padrão de `playerName`/`usedQIds` já usado pelo jogo — sem seletor de perfil dedicado, o nome digitado é a chave).
-- Mapa categoria→emoji/nome fica em `CATEGORY_META` (`js/progress.js`); a lógica de sorteio/persistência fica em `awardForRoundResult()`, chamada uma vez por rodada dentro de `showResults()`.
+- **Badges de categoria**: a cada múltiplo de 3 moedas (3, 6, 9...), a criança ganha 1 badge sorteado entre as 7 categorias fixas de `CATEGORY_META` (`js/progress.js`), sem repetir uma já conquistada — álbum completo em 21 moedas. Badges ficam guardados no Álbum de Figurinhas (`#screen-album`), acessível a qualquer momento pelo ícone de livro (📖) fixo no canto superior esquerdo — visível em todas as telas exceto a de escolha de idioma. O limiar fica em `COINS_PER_BADGE` (`js/progress.js`). A tela de Boas-vindas mostra e fala um lembrete da regra (`albumHint` em `js/i18n.js`).
+- **Vídeo do selo**: ao revelar um badge novo, `js/game.js` toca o vídeo dedicado daquela categoria em `video/badges/<arquivo>.mp4` — o nome do arquivo (com espaços/acentos) fica mapeado diretamente no campo `video` de cada entrada de `CATEGORY_META`, não é derivado automaticamente do slug. A transição do vídeo da moeda para o vídeo do selo usa um sweep de luz dourada (`transitionToBadge()` em `js/game.js`, `#video-overlay-sweep` no CSS) que mantém o overlay aberto entre os dois vídeos, e a fala do selo ("Parabéns, você ganhou o selo de X!") começa junto do vídeo do selo, não do vídeo da moeda. Se o arquivo de vídeo não existir, cai automaticamente para uma revelação com emoji + nome da categoria.
+- **Persistência**: `js/progress.js` guarda `{ coins, badges }` por nome de jogador na chave localStorage `playerProgress` (mesmo padrão de `playerName`/`usedQIds` já usado pelo jogo — sem seletor de perfil dedicado, o nome digitado é a chave). `hydrateProgress()` descarta silenciosamente qualquer badge de um conjunto de categorias anterior que não exista mais em `CATEGORY_META`, sem afetar o saldo de moedas.
+- Mapa categoria→emoji/nome/vídeo fica em `CATEGORY_META` (`js/progress.js`); a lógica de sorteio/persistência fica em `awardForRoundResult()`, chamada uma vez por rodada dentro de `showResults()`.
 
 ## Como Fazer Deploy
 
@@ -145,6 +145,12 @@ O GitHub Pages atualiza automaticamente em 1–2 minutos.
 - [x] Progresso (moedas/badges) salvo por nome de jogador, persistente entre sessões
 
 ## Changelog
+
+### 2026-08-07 — v1.4.0
+- Álbum de figurinhas reduzido de 26 para 7 categorias fixas, cada uma com vídeo próprio em `video/badges/` (cuidador de pets, explorador da selva, explorador dos oceanos, observador de insetos, observador de pássaros, observador de dinossauros, alimentação saudável) — álbum completo em 21 moedas
+- Fala dedicada por selo ("Parabéns, você ganhou o selo de X!"), sincronizada com o início do vídeo do selo em vez de compartilhar a fala com o vídeo da moeda
+- Transição de sweep de luz dourada entre o vídeo da moeda e o vídeo do selo, sem fechar/reabrir o overlay (evita a tela de resultado piscar no meio da sequência)
+- Progresso salvo de um conjunto de categorias anterior é migrado automaticamente: badges incompatíveis são descartados, moedas continuam valendo
 
 ### 2026-07-11 — v1.3.0
 - +260 perguntas novas (10 por categoria, ids 501–760), em português e inglês, com dificuldade variada e diversos emojis/temas fora do banco usual (ex.: capivara, onça-pintada, buraco negro, saudade, pão de queijo) — banco total passa de 500 para 760 perguntas
