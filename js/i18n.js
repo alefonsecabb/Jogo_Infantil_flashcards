@@ -64,6 +64,7 @@ const UI_STRINGS = {
     coinEarnedSpeech: 'Parabéns, você ganhou uma moeda de ouro!',
     badgeEarnedSpeech: (categoryLabel) => `Parabéns, você ganhou o selo de ${categoryLabel}!`,
     albumCompleteSpeech: 'Uau! Seu álbum de figurinhas está completo!',
+    checkMapSpeech: 'Cheque seu mapa de aventuras!',
 
     catCuidadorPets: 'Cuidador de Pets',
     catExploradorSelva: 'Explorador da Selva',
@@ -130,6 +131,7 @@ const UI_STRINGS = {
     coinEarnedSpeech: 'Congratulations, you earned a gold coin!',
     badgeEarnedSpeech: (categoryLabel) => `Congratulations, you earned the ${categoryLabel} badge!`,
     albumCompleteSpeech: 'Wow! Your sticker album is complete!',
+    checkMapSpeech: 'Check your adventure map!',
 
     catCuidadorPets: 'Pet Caretaker',
     catExploradorSelva: 'Jungle Explorer',

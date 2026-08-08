@@ -524,69 +524,99 @@ h1 {
 .album-slot.locked .album-slot-label { color: var(--subtle); }
 
 /* ===== MAPA DE EVOLUÇÃO ===== */
-.map-card { max-width: 720px; max-height: 85vh; }
+.map-card {
+  max-width: 920px;
+  max-height: 92vh;
+  position: relative;
+  overflow: hidden;
+  border: 6px solid #fff;
+  /* Fundo com cara de mapa de aventura: "terreno" verde-areia com dois
+     realces suaves de luz, em vez do branco chapado de screen-card. */
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.4) 0%, transparent 42%),
+    radial-gradient(circle at 88% 82%, rgba(255, 255, 255, 0.28) 0%, transparent 38%),
+    linear-gradient(160deg, #8fd3a8 0%, #cfe8a9 35%, #f4e4b8 65%, #e8c988 100%);
+}
+.map-card::before {
+  content: '🧭';
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: clamp(28px, 6vw, 40px);
+  opacity: 0.55;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+.map-card h1,
+.map-card .subtitle {
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 12px;
+  padding: 2px 16px;
+}
 .map-track {
   display: flex;
   align-items: center;
   width: 100%;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding: 30px 12px;
+  padding: 42px 16px;
 }
 .map-stage {
   position: relative;
   flex: 0 0 auto;
-  width: 68px;
-  height: 68px;
+  width: clamp(84px, 22vw, 116px);
+  height: clamp(84px, 22vw, 116px);
   border-radius: 50%;
   background: var(--card-bg);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 4px solid #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   scroll-snap-align: center;
 }
-.map-stage.stage-up   { transform: translateY(-14px); }
-.map-stage.stage-down { transform: translateY(14px); }
+.map-stage.stage-up   { transform: translateY(-24px); }
+.map-stage.stage-down { transform: translateY(24px); }
 .map-stage-num {
   position: absolute;
-  top: -6px;
-  left: -6px;
+  top: -8px;
+  left: -8px;
   background: var(--bg-start);
   color: #fff;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #fff;
 }
-.map-stage-emoji { font-size: 22px; line-height: 1; }
+.map-stage-emoji { font-size: clamp(30px, 8vw, 42px); line-height: 1; }
 .map-stage-label {
   font-family: var(--font-body);
   font-weight: 800;
-  font-size: 7.5px;
+  font-size: 10px;
   color: var(--text);
   text-align: center;
-  line-height: 1.1;
-  max-width: 60px;
-  padding: 0 2px;
+  line-height: 1.15;
+  max-width: 84px;
+  padding: 0 4px;
 }
-.map-stage-check { position: absolute; bottom: -4px; right: -4px; font-size: 13px; }
-.map-stage.locked { opacity: 0.4; filter: grayscale(1); }
+.map-stage-check { position: absolute; bottom: -4px; right: -4px; font-size: 18px; }
+.map-stage.locked { opacity: 0.45; filter: grayscale(1); }
 .map-stage.locked .map-stage-label { color: var(--subtle); }
 .map-stage.current {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.7), 0 6px 24px rgba(0, 0, 0, 0.22);
   animation: dot-pulse 1.4s ease-in-out infinite;
 }
 .map-connector {
-  flex: 0 0 32px;
-  height: 2px;
-  border-top: 3px dashed rgba(45, 52, 54, 0.25);
+  flex: 0 0 44px;
+  height: 4px;
+  border-top: 4px dashed rgba(169, 114, 12, 0.55);
 }
 
 /* ===== OVERLAY DE VÍDEO (moeda / badge) ===== */
@@ -768,6 +798,9 @@ h1 {
   .card-label { font-size: 13px; }
   .album-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
   #book-menu { min-width: 140px; }
+  .map-stage { width: 78px; height: 78px; }
+  .map-stage.stage-up   { transform: translateY(-16px); }
+  .map-stage.stage-down { transform: translateY(16px); }
 }
 
 /* Landscape on small phones */

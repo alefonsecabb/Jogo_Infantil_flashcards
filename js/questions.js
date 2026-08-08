@@ -1260,7 +1260,7 @@ const QUESTIONS = (function () {
     q(563,'dinossauros','O que caiu do céu e ajudou a fazer os dinossauros desaparecerem da Terra?',
       ['☄️','Um asteroide gigante', 'img/options/asteroide.webp'],['🌧️','Muita chuva'],['❄️','Um floco de neve'],['🎈','Um balão']),
     q(564,'dinossauros','Qual dinossauro tinha um polegar pontudo em formato de espinho?',
-      ['🦕','Iguanodonte', 'img/options/iguanodonte.webp'],['🦕','Triceratops'],['🦖','T-Rex', 'img/options/tiranossauro_azul.webp'],['🦕','Estegossauro']),
+      ['🦕','Iguanodonte', 'img/options/dinossauro_rabo_marreta.webp'],['🦕','Triceratops', 'img/options/triceratops.webp'],['🦖','T-Rex', 'img/options/tiranossauro_azul.webp'],['🦕','Estegossauro']),
     q(565,'dinossauros','Como se chama a pessoa que estuda ossos de dinossauro e monta os esqueletos?',
       ['🦴','Paleontólogo', 'img/options/paleontologo.webp'],['👩‍🏫','Professor'],['👨‍⚕️','Médico'],['👨‍🍳','Cozinheiro']),
     q(566,'dinossauros','Onde podemos ver esqueletos gigantes de dinossauro montados?',

@@ -667,8 +667,8 @@ function transitionToBadge(award) {
       fallbackEmoji: meta.emoji,
       onEnd: () => {
         const closing = award.albumCompleted
-          ? [t('albumCompleteSpeech'), t('playAgainClose')]
-          : [t('playAgainClose')];
+          ? [t('albumCompleteSpeech'), t('checkMapSpeech'), t('playAgainClose')]
+          : [t('checkMapSpeech'), t('playAgainClose')];
         scheduleTimeout(() => speakSeq(closing, 0.93, 1.18), 300);
       },
     });
