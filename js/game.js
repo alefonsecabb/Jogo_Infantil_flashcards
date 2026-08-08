@@ -456,7 +456,7 @@ function speakOptions(token) {
     if (highlighted) highlighted.classList.remove('speaking');
     highlighted = null;
   };
-  speakSeq(labels, 1.0, 1.18, clear, highlight);
+  speakSeq(labels, 0.85, 1.18, clear, highlight);
 }
 
 function showQuestion() {
