@@ -18,7 +18,13 @@ const G = {
   pendingTimeouts: [],   // setTimeout ids da sequência de revelação de RESULTS
   resultsToken: 0,       // invalida callbacks de fala pendentes se a tela mudar no meio
   questionToken: 0,      // invalida callbacks de destaque de opção de uma pergunta que já não é a atual
+  badgeVideoFailed: false, // true se o pré-carregamento do vídeo do selo desta rodada deu erro
 };
+
+// Quanto antes do fim natural do vídeo da moeda o vídeo do selo já começa a
+// se misturar por baixo (ver playCoinIntoBadge). Mantido em sync com a
+// duração das animações .coin-dissolve-out/.badge-materialize em style.css.
+const BADGE_CROSSFADE_LEAD = 1.1;
 
 function currentVoice() { return G.lang === 'en' ? G.voiceEn : G.voicePt; }
 
@@ -323,16 +329,23 @@ function playOverlayVideo(src, { onEnd, fallbackEmoji, holdOpen } = {}) {
 function forceCloseVideoOverlay() {
   const overlay  = $('video-overlay');
   const player   = $('video-overlay-player');
+  const player2  = $('video-overlay-player-2');
   const fallback = $('video-overlay-fallback');
   const grain    = $('video-overlay-grain');
   const sweep    = $('video-overlay-sweep');
   overlay.classList.remove('active');
-  player.onended = null;
-  player.onerror = null;
-  player.pause();
-  player.removeAttribute('src');
-  player.load();
-  player.classList.remove('fading');
+  [player, player2].forEach(p => {
+    p.onended = null;
+    p.onerror = null;
+    p.ontimeupdate = null;
+    p.pause();
+    p.removeAttribute('src');
+    p.load();
+    p.classList.remove('fading', 'coin-dissolve-out', 'badge-materialize');
+    p.style.opacity = '';
+    p.muted = false;
+  });
+  player2.style.display = 'none';
   fallback.classList.remove('fading');
   grain.classList.remove('active');
   sweep.classList.remove('active');
@@ -390,7 +403,7 @@ function showWelcome() {
   $('welcome-msg').textContent = `${t('greeting')(G.name)[0]} 🦄❤️🪙👋`;
   updateCoinDisplay();
   showScreen('screen-welcome');
-  setTimeout(() => speakSeq([...t('greeting')(G.name), t('albumHint')], 1.06, 1.18), 400);
+  setTimeout(() => speakSeq([...t('greeting')(G.name), t('albumHint')], 0.98, 1.18), 400);
 }
 
 // ===== POOL SEM REPETIÇÃO =====
@@ -501,7 +514,7 @@ function showQuestion() {
 
   const token = ++G.questionToken;
   setTimeout(() => {
-    speakSeq([q.question], 0.98, 1.18, () => {
+    speakSeq([q.question], 0.98, 1.28, () => {
       if (G.questionToken !== token) return;
       setTimeout(() => speakOptions(token), 120);
     });
@@ -622,6 +635,19 @@ function showResults() {
   $('video-overlay-player').src = 'video/moeda/unicornio_video.mp4';
   $('video-overlay-player').load();
 
+  // Se a rodada também rende um selo, pré-carrega o vídeo dele em paralelo
+  // (na segunda camada) — precisa estar pronto bem antes do fim do vídeo da
+  // moeda para a fusão em playCoinIntoBadge() ter tempo de se preparar. Se
+  // der erro (arquivo ausente etc.), G.badgeVideoFailed desvia para o fluxo
+  // sequencial antigo em vez de travar a revelação.
+  G.badgeVideoFailed = false;
+  if (award.newBadgeSlug) {
+    const playerB = $('video-overlay-player-2');
+    playerB.onerror = () => { G.badgeVideoFailed = true; };
+    playerB.src = encodeURI(`video/badges/${CATEGORY_META[award.newBadgeSlug].video}`);
+    playerB.load();
+  }
+
   // Há moeda (e talvez badge) para revelar: fala o resultado normal primeiro
   // e só encadeia a moeda depois que a fala realmente terminar (nunca um
   // tempo fixo chutado, que pode cortar a voz no meio da frase).
@@ -636,25 +662,146 @@ function showResults() {
 function revealCoin(award) {
   updateCoinDisplay();
   speakSeq([t('coinEarnedSpeech')], 1.0, 1.2);
-  playOverlayVideo('video/moeda/unicornio_video.mp4', {
-    fallbackEmoji: '🦄🪙',
-    holdOpen: !!award.newBadgeSlug,
-    onEnd: () => {
-      if (award.newBadgeSlug) {
-        transitionToBadge(award);
-      } else {
-        scheduleTimeout(() => speakSeq([t('playAgainClose')], 0.93, 1.18), 300);
-      }
-    },
+
+  if (!award.newBadgeSlug) {
+    playOverlayVideo('video/moeda/unicornio_video.mp4', {
+      fallbackEmoji: '🦄🪙',
+      onEnd: () => scheduleTimeout(() => speakSeq([t('playAgainClose')], 0.93, 1.18), 300),
+    });
+    return;
+  }
+
+  if (G.badgeVideoFailed) {
+    // Vídeo do selo não carregou: sem nada pra mesclar, cai pro fluxo
+    // sequencial antigo (que já lida com fallback de emoji pro selo também).
+    playOverlayVideo('video/moeda/unicornio_video.mp4', {
+      fallbackEmoji: '🦄🪙',
+      holdOpen: true,
+      onEnd: () => legacyTransitionToBadge(award),
+    });
+    return;
+  }
+
+  playCoinIntoBadge(award);
+}
+
+// Funde o final do vídeo da moeda com o começo do vídeo do selo: nos últimos
+// BADGE_CROSSFADE_LEAD segundos da moeda — ainda com o som dela tocando — o
+// selo já começa a tocar por baixo, mudo, com um dissolve visual (moeda
+// esmaece, selo materializa) coberto pelo sweep dourado. O áudio da moeda
+// nunca é cortado (toca até o onended natural); só então o selo é desmutado
+// a partir de onde já estava (technique de edição "L-cut"), sem repetir nem
+// pular o começo do próprio clipe.
+function playCoinIntoBadge(award) {
+  const meta     = CATEGORY_META[award.newBadgeSlug];
+  const overlay  = $('video-overlay');
+  const playerA  = $('video-overlay-player');
+  const playerB  = $('video-overlay-player-2');
+  const fallback = $('video-overlay-fallback');
+  const grain    = $('video-overlay-grain');
+  const sweep    = $('video-overlay-sweep');
+
+  let merged = false;
+
+  const startMerge = () => {
+    if (merged) return;
+    merged = true;
+    sweep.classList.remove('active');
+    void sweep.offsetWidth; // reinicia a animação CSS
+    sweep.classList.add('active');
+    playerB.play().catch(() => {});
+    playerA.classList.add('coin-dissolve-out');
+    playerB.classList.add('badge-materialize');
+    scheduleTimeout(() => {
+      playerB.classList.remove('badge-materialize');
+      playerB.style.opacity = '1';
+    }, 1100);
+  };
+
+  playerA.ontimeupdate = () => {
+    if (merged) return;
+    const dur = playerA.duration;
+    if (!isFinite(dur) || dur <= 0) return;
+    if (dur - playerA.currentTime <= BADGE_CROSSFADE_LEAD) startMerge();
+  };
+
+  playerA.onerror = () => {
+    playerA.ontimeupdate = null;
+    playerA.onended = null;
+    playerA.onerror = null;
+    playerA.style.display = 'none';
+    playerB.pause();
+    playerB.style.display = 'none';
+    fallback.style.display = 'flex';
+    fallback.textContent = '🦄🪙';
+    fallback.style.animation = 'pop-in 0.45s ease';
+    scheduleTimeout(() => {
+      fallback.style.display = 'none';
+      legacyTransitionToBadge(award);
+    }, 1400);
+  };
+
+  playerA.onended = () => {
+    playerA.ontimeupdate = null;
+    playerA.onended = null;
+    playerA.onerror = null;
+    if (!merged) startMerge(); // salvaguarda: vídeo mais curto que o previsto
+    playerB.muted = false;
+    speakSeq([t('badgeEarnedSpeech')(t(meta.labelKey))], 1.0, 1.2);
+    playerA.pause();
+    playerA.removeAttribute('src');
+    playerA.load();
+    playerA.style.display = 'none';
+    playerA.classList.remove('coin-dissolve-out');
+    playerB.onended = () => finishBadge(award, overlay, playerB, grain);
+  };
+
+  overlay.classList.add('active');
+  fallback.style.display = 'none';
+  playerA.style.display = '';
+  playerA.classList.remove('fading', 'coin-dissolve-out');
+  playerA.style.animation = 'video-pop-in 0.4s ease';
+  playerB.style.display = '';
+  playerB.classList.remove('fading', 'badge-materialize');
+  playerB.style.opacity = '0';
+  playerB.muted = true;
+
+  playerA.muted = false;
+  if (playerA.getAttribute('src') !== 'video/moeda/unicornio_video.mp4') {
+    playerA.src = 'video/moeda/unicornio_video.mp4';
+  }
+  playerA.play().catch(() => {
+    playerA.muted = true;
+    playerA.play().catch(() => playerA.onerror());
   });
 }
 
-// Sweep dourado cobrindo a troca do vídeo da moeda para o vídeo do selo —
-// mantém o overlay aberto (holdOpen no vídeo da moeda) para não deixar a
-// tela de resultado piscar no meio. A fala do selo agora começa junto do
-// vídeo do selo (não mais junto do vídeo da moeda), sincronizando áudio
-// com a categoria certa.
-function transitionToBadge(award) {
+// Dissolve final do vídeo do selo (mesmo tratamento de fim de revelação que
+// playOverlayVideo usa) + fala de encerramento da sequência de resultado.
+function finishBadge(award, overlay, playerB, grain) {
+  playerB.classList.add('fading');
+  grain.classList.add('active');
+  scheduleTimeout(() => {
+    overlay.classList.remove('active');
+    playerB.onended = null;
+    playerB.pause();
+    playerB.removeAttribute('src');
+    playerB.load();
+    playerB.classList.remove('fading', 'badge-materialize');
+    playerB.style.display = 'none';
+    playerB.style.opacity = '';
+    grain.classList.remove('active');
+    const closing = award.albumCompleted
+      ? [t('albumCompleteSpeech'), t('checkMapSpeech'), t('playAgainClose')]
+      : [t('checkMapSpeech'), t('playAgainClose')];
+    scheduleTimeout(() => speakSeq(closing, 0.93, 1.18), 300);
+  }, 650);
+}
+
+// Fallback: sequência antiga (moeda inteira → sweep dourado → selo/emoji),
+// usada só quando o pré-carregamento do vídeo do selo falhou e não há como
+// mesclar os dois vídeos com segurança.
+function legacyTransitionToBadge(award) {
   const meta = CATEGORY_META[award.newBadgeSlug];
   const sweep = $('video-overlay-sweep');
   sweep.classList.remove('active');
