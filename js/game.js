@@ -761,7 +761,10 @@ function playCoinIntoBadge(award) {
   playerA.style.display = '';
   playerA.classList.remove('fading', 'coin-dissolve-out');
   playerA.style.animation = 'video-pop-in 0.4s ease';
-  playerB.style.display = '';
+  // #video-overlay-player-2 tem `display: none` no CSS por padrão (só some
+  // se vazio quando limpamos o estilo inline) — precisa de um valor
+  // explícito aqui, senão o vídeo toca (áudio audível) mas nunca aparece.
+  playerB.style.display = 'block';
   playerB.classList.remove('fading', 'badge-materialize');
   playerB.style.opacity = '0';
   playerB.muted = true;
