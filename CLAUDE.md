@@ -14,27 +14,6 @@ Jogo educativo para Elisa (5 anos) e crianças de 4 a 6 anos. Perguntas faladas 
 - Web Audio API — efeitos sonoros procedurais (sem arquivos de áudio)
 - GitHub Pages — hospedagem estática gratuita
 
-## Estrutura de Arquivos
-
-```
-Projeto_jogo_Infantil_Elisa/
-├── index.html          # 6 telas: Idioma, Nome, Boas-vindas, Jogo, Resultado, Álbum
-├── CLAUDE.md           # este arquivo — histórico do projeto
-├── README.md           # documentação pública
-├── css/
-│   └── style.css       # design infantil colorido + todas as animações
-├── img/options/        # imagens customizadas das opções de resposta
-├── video/
-│   ├── moeda/unicornio_video.mp4   # animação de entrega da moedinha de ouro
-│   └── badges/                     # 1 vídeo por selo (7 fixos, ver seção Progressão)
-└── js/
-    ├── questions.js    # banco com 760 perguntas (26 categorias), em português
-    ├── questions.en.js # traduções em inglês das 760 perguntas, indexadas por id
-    ├── i18n.js         # dicionário pt/en da interface e da fala + helpers de tradução
-    ├── progress.js      # moedas, badges, álbum de figurinhas — estado + persistência
-    └── game.js         # lógica, TTS, áudio, estados, celebrações, idioma, menu do livro
-```
-
 ## Fluxo do Jogo
 
 ```
@@ -47,56 +26,6 @@ LANGUAGE → NAME_INPUT → WELCOME → PLAYING → FEEDBACK → PLAYING ... →
 3. **PLAYING**: Pergunta falada automaticamente; 4 flashcards clicáveis; botão 🔊 para repetir
 4. **FEEDBACK**: 1ª errada → shake + "Tente de novo!"; 2ª errada → revela certa; Certa → celebração
 5. **RESULTS**: 1–3 estrelas; voz lê resultado; "Jogar de novo!"
-
-## Categorias do Banco de Perguntas
-
-| # | Categoria | Emoji | Qtd |
-|---|-----------|-------|-----|
-| 1 | Animais domésticos | 🐾 | 29 |
-| 2 | Animais selvagens | 🦁 | 29 |
-| 3 | Animais marinhos | 🐬 | 29 |
-| 4 | Animais da fazenda | 🐄 | 29 |
-| 5 | Insetos e pequenos animais | 🐛 | 29 |
-| 6 | Pássaros | 🐦 | 29 |
-| 7 | Dinossauros | 🦕 | 29 |
-| 8 | Frutas | 🍎 | 29 |
-| 9 | Vegetais e legumes | 🥕 | 29 |
-| 10 | Natureza e plantas | 🌿 | 29 |
-| 11 | Estações do ano | 🍂 | 29 |
-| 12 | Clima e tempo | 🌤️ | 29 |
-| 13 | Cores | 🎨 | 29 |
-| 14 | Formas geométricas | 🔷 | 29 |
-| 15 | Números e quantidades | 🔢 | 29 |
-| 16 | Família | 👨‍👩‍👧 | 29 |
-| 17 | Emoções | 💛 | 29 |
-| 18 | Corpo e sentidos | 👃 | 29 |
-| 19 | Escola | 🏫 | 29 |
-| 20 | Transportes | 🚗 | 29 |
-| 21 | Profissões | 👩‍🏫 | 29 |
-| 22 | Alimentos e bebidas | 🍽️ | 29 |
-| 23 | Roupas e acessórios | 👗 | 29 |
-| 24 | Objetos da casa | 🏠 | 29 |
-| 25 | Brinquedos e diversão | 🎮 | 29 |
-| 26 | Espaço e Universo | 🚀 | 35 |
-| | **TOTAL** | | **760** |
-
-## Como Adicionar Perguntas
-
-Edite `js/questions.js` e adicione objetos no array `QUESTIONS` seguindo este modelo:
-
-```javascript
-{
-  id: 999,               // ID único
-  category: 'animais',  // categoria (ver tabela acima)
-  question: 'Qual animal faz AU AU?',
-  options: [
-    { emoji: '🐶', label: 'Cachorro', correct: true  },
-    { emoji: '🐱', label: 'Gato',     correct: false },
-    { emoji: '🐄', label: 'Vaca',     correct: false },
-    { emoji: '🐸', label: 'Sapo',     correct: false }
-  ]
-}
-```
 
 ## Suporte a Inglês (i18n)
 
@@ -111,40 +40,15 @@ O jogo é bilíngue (português/inglês), escolhido na tela de bandeiras no iní
 
 - **Moedinha de ouro**: qualquer rodada com 8 ou mais acertos (de 10) rende +1 moeda, entregue com o vídeo `video/moeda/unicornio_video.mp4` (overlay fullscreen, `js/game.js` → `playOverlayVideo()`). O saldo é vitalício (nunca reseta) e aparece no topo das telas de Boas-vindas, Jogo e Resultado (`.coin-balance`).
 - **Badges de categoria**: a cada múltiplo de 3 moedas (3, 6, 9...), a criança ganha 1 badge sorteado entre as 7 categorias fixas de `CATEGORY_META` (`js/progress.js`), sem repetir uma já conquistada — álbum completo em 21 moedas. Badges ficam guardados no Álbum de Figurinhas (`#screen-album`), acessível a qualquer momento pelo ícone de livro (📖) fixo no canto superior esquerdo — visível em todas as telas exceto a de escolha de idioma. O limiar fica em `COINS_PER_BADGE` (`js/progress.js`). A tela de Boas-vindas mostra e fala um lembrete da regra (`albumHint` em `js/i18n.js`).
-- **Vídeo do selo**: ao revelar um badge novo, `js/game.js` toca o vídeo dedicado daquela categoria em `video/badges/<arquivo>.mp4` — o nome do arquivo (com espaços/acentos) fica mapeado diretamente no campo `video` de cada entrada de `CATEGORY_META`, não é derivado automaticamente do slug. A transição do vídeo da moeda para o vídeo do selo usa um sweep de luz dourada (`transitionToBadge()` em `js/game.js`, `#video-overlay-sweep` no CSS) que mantém o overlay aberto entre os dois vídeos, e a fala do selo ("Parabéns, você ganhou o selo de X!") começa junto do vídeo do selo, não do vídeo da moeda. Se o arquivo de vídeo não existir, cai automaticamente para uma revelação com emoji + nome da categoria.
+- **Vídeo do selo**: ao revelar um badge novo, `js/game.js` toca o vídeo dedicado daquela categoria em `video/badges/<arquivo>.mp4` — o nome do arquivo (com espaços/acentos) fica mapeado diretamente no campo `video` de cada entrada de `CATEGORY_META`, não é derivado automaticamente do slug. A transição do vídeo da moeda para o vídeo do selo é sequencial: o vídeo da moeda toca inteiro (com `holdOpen` mantendo o overlay escurecido aberto, sem fechar/reabrir), depois um sweep de luz dourada (`transitionToBadge()` em `js/game.js`, `#video-overlay-sweep` no CSS) cobre a troca de vídeo dentro do mesmo player (`playOverlayVideo()`), e a fala do selo ("Parabéns, você ganhou o selo de X!") começa junto do vídeo do selo, não do vídeo da moeda. O vídeo do selo é pré-carregado numa camada `<video>` escondida (`#video-overlay-player-2`) enquanto a moeda ainda toca, só para esquentar o cache do navegador — nunca é exibido nem tocado diretamente. Se o arquivo de vídeo não existir, cai automaticamente para uma revelação com emoji + nome da categoria. (Uma versão anterior tentava fundir os dois vídeos com fade cruzado sincronizado por tempo — era frágil e o selo às vezes não aparecia; foi revertida para essa transição sequencial mais simples.)
 - **Persistência**: `js/progress.js` guarda `{ coins, badges }` por nome de jogador na chave localStorage `playerProgress` (mesmo padrão de `playerName`/`usedQIds` já usado pelo jogo — sem seletor de perfil dedicado, o nome digitado é a chave). `hydrateProgress()` descarta silenciosamente qualquer badge de um conjunto de categorias anterior que não exista mais em `CATEGORY_META`, sem afetar o saldo de moedas.
 - Mapa categoria→emoji/nome/vídeo fica em `CATEGORY_META` (`js/progress.js`); a lógica de sorteio/persistência fica em `awardForRoundResult()`, chamada uma vez por rodada dentro de `showResults()`.
 
-## Como Fazer Deploy
-
-```bash
-git add -A
-git commit -m "feat: descrição da mudança"
-git push origin main
-```
-
-O GitHub Pages atualiza automaticamente em 1–2 minutos.
-
-## Funcionalidades
-
-- [x] Tela de nome personalizado (salvo em localStorage)
-- [x] Voz feminina pt-BR falando perguntas e elogios
-- [x] 4 flashcards com emoji por pergunta
-- [x] 2 tentativas por pergunta antes de revelar a certa
-- [x] 3 tipos de celebração: confete 🎊, arco-íris 🌈, unicórnio 🦄
-- [x] Sons procedurais via Web Audio API
-- [x] Botão 🔊 para repetir a pergunta
-- [x] 10 perguntas por sessão (sorteadas do banco de 760+)
-- [x] Tela de resultado com 1–3 estrelas
-- [x] Responsivo: funciona em tablet, celular e PC
-- [x] Orientação retrato e paisagem suportadas
-- [x] Sem necessidade de internet após o carregamento inicial
-- [x] Suporte bilíngue português/inglês com seletor de bandeiras e voz nativa em cada idioma
-- [x] Sistema de progressão: moedinhas de ouro por rodadas com 8+ acertos, entregues por vídeo de unicórnio
-- [x] Álbum de figurinhas com badges de categoria (sorteados a cada 3 moedas), acessível por ícone de livro fixo
-- [x] Progresso (moedas/badges) salvo por nome de jogador, persistente entre sessões
-
 ## Changelog
+
+### 2026-08-15 — v1.4.1
+- Corrigido bug em que o vídeo do selo não aparecia na transição moeda→badge: a tentativa anterior fundia os dois vídeos sobrepostos com fade cruzado sincronizado por tempo (`ontimeupdate`), o que era frágil; revertido para a transição sequencial mais simples (moeda toca inteira → sweep dourado → selo toca), reaproveitando o mesmo caminho de reprodução já comprovado (`playOverlayVideo()`) para os dois vídeos
+- Vídeo do selo continua pré-carregado numa camada `<video>` escondida enquanto a moeda toca, só para esquentar o cache do navegador — nunca é exibido nem tocado diretamente
 
 ### 2026-08-07 — v1.4.0
 - Álbum de figurinhas reduzido de 26 para 7 categorias fixas, cada uma com vídeo próprio em `video/badges/` (cuidador de pets, explorador da selva, explorador dos oceanos, observador de insetos, observador de pássaros, observador de dinossauros, alimentação saudável) — álbum completo em 21 moedas
